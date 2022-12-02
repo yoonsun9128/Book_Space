@@ -11,6 +11,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+
 class ArticleListView(APIView):
     def get(self, request):
 
@@ -18,4 +19,8 @@ class ArticleListView(APIView):
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+
+
+    
 
