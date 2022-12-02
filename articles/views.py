@@ -10,4 +10,17 @@ class ArticleView(APIView): #게시글 불러오기(인기글로)
         serializer = ArticleSerializer(popular_articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+class ArticleListView(APIView):
+    def get(self, request):
+
+        articles_list = Article.objects.all()
+        serializer = ArticleSerializer(articles_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+
+
     
+
