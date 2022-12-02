@@ -1,7 +1,8 @@
 from django.db import models
+from users.models import User
 
 class Article(models.Model):
-    #user = models.ForeignKey(User) 유저모델 생성후
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField()
     content = models.TextField()
     image = models.ImageField()
