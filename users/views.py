@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import ( TokenObtainPairView,TokenRefreshView, )
 from .models import User
-from users.serializers import CustomTokenObtainPairSerializer, UserSerializer
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer
 
 class UserView(APIView):
     def post(self, request):
@@ -17,3 +17,11 @@ class UserView(APIView):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+class MypageView(APIView):
+   def get(self, request, user_id):
+        user = User.objects.get(id=user_id) 
+        serializer = UserMypageSerializer(user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)      
+
