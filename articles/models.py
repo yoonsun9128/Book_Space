@@ -6,6 +6,7 @@ class Article(models.Model):
     title = models.TextField()
     content = models.TextField()
     image = models.ImageField()
+    likes = models.ManyToManyField(User, related_name="likes_articles")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     
@@ -15,3 +16,4 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+    
