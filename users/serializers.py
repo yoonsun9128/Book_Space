@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from articles.serializers import ArticleImageSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -63,4 +64,17 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['email'] = user.email
 
-        return token
+        return token      
+
+class ProfileImgSerializer(serializers.ModelSerializer):# 마이페이지에 프로필 이미지를 들고오기 위한 시리얼라이즈
+    class Meta:
+        model = User
+        fields = ("profile_img",)
+         
+
+class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
+    article_set = ArticleImageSerializer(many=True)
+    user_set = ProfileImgSerializer(many=True)
+    class Meta:
+        model = User
+        fields =  ("username", "article_set", "user_set" )
