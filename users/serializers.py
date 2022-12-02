@@ -66,15 +66,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return token      
 
-class ProfileImgSerializer(serializers.ModelSerializer):# 마이페이지에 프로필 이미지를 들고오기 위한 시리얼라이즈
-    class Meta:
-        model = User
-        fields = ("profile_img",)
-         
+
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
     article_set = ArticleImageSerializer(many=True)
-    user_set = ProfileImgSerializer(many=True)
     class Meta:
         model = User
-        fields =  ("username", "article_set", "user_set" )
+        fields =  ("username", "article_set", "profile_img" )

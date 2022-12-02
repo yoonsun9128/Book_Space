@@ -16,7 +16,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("content",)
+        fields = ("content",) 
 
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
@@ -34,6 +34,11 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    likes_count = serializers.SerializerMethodField()
+    
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
     class Meta:
         model = Article
         fields = "__all__"

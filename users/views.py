@@ -21,7 +21,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class MypageView(APIView):
    def get(self, request, user_id):
-        user = User.objects.get(id=user_id) 
-        serializer = UserMypageSerializer(user, many=True)
+        user = User.objects.get(id=user_id)
+        serializer = UserMypageSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)      
 
