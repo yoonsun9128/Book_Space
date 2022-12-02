@@ -37,7 +37,6 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     )
 }
 
@@ -161,3 +160,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'

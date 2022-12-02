@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
+    def create_user(self, email, username, password=None, profile_img=None):
         if not email:
             raise ValueError('Users must have an email address')
         if not username:
@@ -11,6 +11,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             username = username,
+            profile_img = profile_img,
         )
 
         user.set_password(password)
@@ -37,8 +38,8 @@ class User(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    username = models.CharField(max_length=100, null=True)
-    profile_img = models.ImageField(null=True, blank=True)
+    username = models.CharField(max_length=100)
+    profile_img = models.ImageField(null=True, blank=True, upload_to='users')
 
     objects = UserManager()
 
