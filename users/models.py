@@ -1,27 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
-from django.utils import timezone
-
 class UserManager(BaseUserManager):
-    def create_user(self, email, username, phone_number, password=None):
+    def create_user(self, email, username, password=None, profile_img=None):
         if not email:
             raise ValueError('Users must have an email address')
+        if not username:
+            raise ValueError('User must have an username')
 
         user = self.model(
             email=self.normalize_email(email),
             username = username,
-            phone_number = phone_number,
+            profile_img = profile_img,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username=None, password=None, phone_number=None):
+    def create_superuser(self, email, username=None, password=None):
         user = self.create_user(
             email,
             password=password,
-            phone_number=phone_number,
             username=username,
 
         )
@@ -38,17 +37,16 @@ class User(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    username = models.CharField(max_length=100, null=True)
-    phone_number = models.IntegerField(blank=True, null=True)
-    filter = models.ManyToManyField('store.Filter', related_name="filter_user")
+    username = models.CharField(max_length=100)
+    profile_img = models.ImageField(null=True, blank=True, upload_to='users')
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
