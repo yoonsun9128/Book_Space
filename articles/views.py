@@ -30,15 +30,7 @@ class ArticleListView(APIView): # main2
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request): # 게시글 작성
-        serializer = ArticleCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors) 
-        
+ 
         
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기
