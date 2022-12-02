@@ -39,6 +39,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     username = models.CharField(max_length=100)
     profile_img = models.ImageField(null=True, blank=True, upload_to='users')
+    like = models.BooleanField(default=False)
 
     objects = UserManager()
 
