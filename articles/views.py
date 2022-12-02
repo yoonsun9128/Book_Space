@@ -96,7 +96,7 @@ class CommentEditView(APIView):
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
 
 
-class LikeView(APIView):
+class LikeView(APIView): #좋아요
     def post(self, request, article_id):
         article = get_object_or_404(Article, id = article_id)
         if request.user in article.likes.all():
