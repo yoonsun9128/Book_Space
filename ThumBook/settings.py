@@ -1,3 +1,4 @@
+
 from pathlib import Path
 from datetime import timedelta
 
@@ -16,7 +17,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-
 
 ]
 

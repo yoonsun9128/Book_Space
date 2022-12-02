@@ -1,9 +1,7 @@
 from rest_framework import serializers
 from users.models import User
-from store.models import Filter, Comment
-from ImageStorage.models import Image
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from store.serializers import OutputImageSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     passwordcheck = serializers.CharField(style={'input_type':'password'}, write_only=True)
@@ -11,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','username','phone_number', 'password','passwordcheck')
+        fields = ('email','username','profile_img' ,'password','passwordcheck')
         extra_kwargs={
             'password':{'write_only':True}
         }
@@ -22,6 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
 
     def update(self, obj, validated_data):
         obj.email = validated_data.get('email', obj.email)
@@ -41,7 +41,6 @@ class UserSerializer(serializers.ModelSerializer):
                 detail={"error":"비밀번호가 맞지 않습니다"}
             )
 
-
         if not len(data.get("email", "")) >= 2:
             raise serializers.ValidationError(
                 detail={"error": "email 길이는 2자리 이상이어야 합니다."}
@@ -51,7 +50,6 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 detail={"error": "password의 길이는 8자리 이상이어야합니다."}
             )
-
 
         if email.exists():
             raise serializers.ValidationError('이메일이 이미 존재합니다.')
