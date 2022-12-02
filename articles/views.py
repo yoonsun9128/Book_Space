@@ -9,7 +9,7 @@ from rest_framework.generics import get_object_or_404
 
 # Create your views here.
 
-class ArticleView(APIView): #게시글 불러오기(인기글로)
+class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
         popular_articles = Article.objects.all().order_by('likes')[:2]
         serializer = ArticleSerializer(popular_articles, many=True)
@@ -25,12 +25,19 @@ class ArticleView(APIView): #게시글 불러오기(인기글로)
 
 
 
-class ArticleListView(APIView):
+class ArticleListView(APIView): # main2
     def get(self, request):
-
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request): # 게시글 작성
+        serializer = ArticleCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors) 
         
         
 class ArticleDetailView(APIView):
