@@ -4,10 +4,10 @@ from articles.models import Article, Comment
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
-    
+
     def get_user(self, obj):
-        return obj.user.email
-    
+        return obj.user.username
+
     class Meta:
         model = Comment
         fields = ("user", "content", "created_at", "updated_at")
@@ -23,17 +23,22 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     comment_set = CommentSerializer(many=True)
 
-    
+
     def get_user(self, obj):
         return obj.user.email
-    
+
     class Meta:
         model = Article
         fields = "__all__"
-        
-        
+
+
 
 class ArticleSerializer(serializers.ModelSerializer):
+    likes_count = serializers.SerializerMethodField()
+    
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
     class Meta:
         model = Article
         fields = "__all__"

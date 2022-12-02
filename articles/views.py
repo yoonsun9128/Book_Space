@@ -5,13 +5,13 @@ from rest_framework import permissions
 from articles.models import Article, Comment
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer
 from rest_framework.generics import get_object_or_404
-
+from django.db.models import Count
 
 # Create your views here.
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
-        popular_articles = Article.objects.all().order_by('likes')[:2]
+        popular_articles = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:2]
         serializer = ArticleSerializer(popular_articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -86,6 +86,17 @@ class CommentEditView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
+
+
+class LikeView(APIView): #좋아요
+    def post(self, request, article_id):
+        article = get_object_or_404(Article, id = article_id)
+        if request.user in article.likes.all():
+            article.likes.remove(request.user)
+            return Response({"message":"좋아요 취소 완료!"}, status=status.HTTP_200_OK)
+        else:
+            article.likes.add(request.user)
+            return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
         
 
