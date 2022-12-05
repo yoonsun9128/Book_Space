@@ -17,4 +17,10 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+
+class Book(models.Model):
+    book_title = models.CharField(max_length=50)
+    img_url = models.TextField()
+    book_content = models.TextField()
+    book_link = models.TextField()
     
