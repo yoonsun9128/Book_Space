@@ -6,8 +6,11 @@ from articles.models import Article, Comment
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
+from articles import crowling
 
 # Create your views here.
+
+crowling.function()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
