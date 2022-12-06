@@ -21,6 +21,6 @@ class Comment(models.Model):
 class Book(models.Model):
     book_title = models.CharField(max_length=50)
     img_url = models.TextField()
-    book_content = models.TextField()
+    book_content = models.TextField(blank=True)
     book_link = models.TextField()
     

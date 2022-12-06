@@ -4,8 +4,10 @@ from articles.models import Book
 import time
 
 def function():
-    for j in range(1,4):
+    # book = Book()
+    for j in range(1,5): #1페이지 당 80개의 데이터
         url = f"http://www.yes24.com/24/category/bestseller?CategoryNumber=001&sumgb=06&PageNumber={j}&FetchSize=80"
+        print(j)
         response = requests.get(url).text.encode('utf-8')
         response = bs4.BeautifulSoup(response, 'html.parser')
 
@@ -20,14 +22,17 @@ def function():
             "book_url":"",
             "book_content":""
         }
-        for i in range(0,80):
+        for i in range(0,79): #79로 설정해야 80개의 데이터가 나옴
             book = Book()
             book_info["book_title"] = text_list[i][2].split('"')[1]
             print(book_info["book_title"])
             print("---------------------------")
             book_info["book_img"] =  text_list[i][2].split('"')[3]
+            print(book_info["book_img"])
             print("---------------------------")
             book_info["book_url"] = text_list[i][1].split('"')[1]
+            print(book_info["book_url"])
+            
             print("---------------------------")
             target2 = response.find('table', {'id':'category_layout', 'class':'list'})
             T2 = target.find_all('')
@@ -40,7 +45,7 @@ def function():
             try:
                 contents = each_html.select("textarea.txtContentText")[0]
             except IndexError:
-                pass
+                contents = ''
             content_list = [x.get_text().replace('\r\n',"") for x in contents]
             book_info["book_content"] = ''.join(s for s in content_list)
             book.book_title = book_info["book_title"]
