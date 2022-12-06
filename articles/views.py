@@ -2,15 +2,13 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import permissions
-from articles.models import Article, Comment
+from articles.models import Article, Comment, Book
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
 
-# Create your views here.
-
-crowling.function()
+# crowling.function()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
@@ -26,7 +24,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
             serializer.save(user=request.user)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)       
+            return Response(serializer.errors)
 
 
 
@@ -35,8 +33,8 @@ class ArticleListView(APIView): # main2
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
- 
-        
+
+
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기
         article = get_object_or_404(Article, id=article_id)
@@ -56,8 +54,8 @@ class ArticleDetailView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        
+
+
 class ArticleEditView(APIView):
     def put(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
@@ -103,9 +101,9 @@ class LikeView(APIView): #좋아요
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
-        
 
 
 
-    
+
+
 
