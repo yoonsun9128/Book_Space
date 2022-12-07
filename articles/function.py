@@ -29,10 +29,7 @@ def select_recommendations(check_list):
         sim_scores = sim_scores[1:2]
         # 가장 유사한 10개의 가게 인덱스를 얻는다.
         store_indices = [idx[0] for idx in sim_scores]
-        store_result = []
         for x in store_indices:
             data = books['book_title'].iloc[x]
-            store_result.append(data)
-        total_book_list.append(store_result)
-        print("비교",store_result)
-    print(total_book_list)
+            total_book_list.append(data)
+    return total_book_list

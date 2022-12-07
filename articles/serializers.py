@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from articles.models import Article, Comment, User
+from articles.models import Article, Comment, Book
+
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -35,9 +36,14 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
     def get_likes_count(self, obj):
         
+        
         return obj.likes.count()
+
+    def get_username(self, obj):
+        return obj.user.username
 
     def get_username(self, obj):
         return obj.user.username
@@ -56,3 +62,8 @@ class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 �
     class Meta:
         model = Article
         fields = ("image",)
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = "__all__"
