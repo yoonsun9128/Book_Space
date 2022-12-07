@@ -6,17 +6,23 @@ from articles.models import Article, Comment, Book
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
-from articles import crowling
+from articles import crowling, function
+import json
 
 # crowling.function()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
-        # popular_articles = Article.objects.all().order_by('-likes')[:2]
-        popular_articles = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:2]
+        print(request.data)
+        test = request.data.get("select_books_id")
+        book_list = Book.objects.filter(id__in=test)
+        book_name_list = []
+        for book in book_list:
+            book_name_list.append(book.book_title)
+        print(book_name_list)
+        function.select_recommendations(book_name_list)
 
-        serializer = ArticleSerializer(popular_articles, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
     def post(self, request): # 게시글 작성
         serializer = ArticleCreateSerializer(data=request.data)
@@ -28,7 +34,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
 
 
 
-class ArticleListView(APIView): # main2
+class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
