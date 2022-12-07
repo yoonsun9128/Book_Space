@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Article, Comment
+from articles.models import Article, Comment, Book
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -51,3 +51,8 @@ class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 �
     class Meta:
         model = Article
         fields = ("image",)
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = "__all__"

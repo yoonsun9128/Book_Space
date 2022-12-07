@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import permissions
 from articles.models import Article, Comment, Book
-from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer
+from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
@@ -14,7 +14,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
         # popular_articles = Article.objects.all().order_by('-likes')[:2]
         popular_articles = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:2]
-
+        
         serializer = ArticleSerializer(popular_articles, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -28,7 +28,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
 
 
 
-class ArticleListView(APIView): # main2
+class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
@@ -101,7 +101,12 @@ class LikeView(APIView): #좋아요
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
-
+    
+class BookListView(APIView): 
+    def get(self, request):
+        book_list = Book.objects.all()
+        serializer = BookSerializer(book_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
