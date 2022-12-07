@@ -6,16 +6,34 @@ from articles.models import Article, Comment, Book
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
-from articles import crowling
+from articles import crowling, function
+import json
+from itertools import chain
+
+
+import json , csv, os, requests
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "onepaper.settings")
+import django
+django.setup()
 
 # crowling.function()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
-        # popular_articles = Article.objects.all().order_by('-likes')[:2]
-        popular_articles = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:2]
-        
-        serializer = ArticleSerializer(popular_articles, many=True)
+        test = request.data.get("select_books_id")
+        userbook_list = Book.objects.filter(id__in=test)
+        best_list = Book.objects.all()
+        book_name_list = []
+        for book in userbook_list:
+            book_name_list.append(book.book_title)
+        recommed_list = function.select_recommendations(book_name_list)
+        result_list = []
+        for result in recommed_list:
+            result_book = Book.objects.get(book_title = result)
+            result_list.append(result_book)
+        total_book_list = list(chain(result_list,best_list))
+        print(total_book_list)
+        serializer = BookSerializer(total_book_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request): # 게시글 작성
@@ -101,14 +119,14 @@ class LikeView(APIView): #좋아요
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
+# csv 만들기
+# with open('bookdata.csv', 'w', newline='') as csvfile:
+#     fieldnames = ['book_img','book_name','book_content', 'book_link']
+#     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+#     writer.writeheader()
     
-class BookListView(APIView): 
-    def get(self, request):
-        book_list = Book.objects.all()
-        serializer = BookSerializer(book_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-
+#     for book in Book.objects.all():
+#         writer.writerow({'book_img':book.img_url,'book_name':book.book_title,'book_content':book.book_content, 'book_link':book.book_link })
 
 
