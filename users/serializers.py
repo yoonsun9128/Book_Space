@@ -73,3 +73,9 @@ class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위
     class Meta:
         model = User
         fields =  ("username", "article_set", "profile_img" )
+
+class ProfileSerializer(serializers.ModelSerializer):# 유저 프로필 수정
+    passwordcheck = serializers.CharField(write_only=True, required=False)
+    class Meta:
+        model = User
+        fields = ("email", "username", "profile_img","password", "passwordcheck")        

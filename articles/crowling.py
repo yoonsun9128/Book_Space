@@ -22,18 +22,18 @@ def function():
             "book_url":"",
             "book_content":""
         }
-        for i in range(0,79): #79로 설정해야 80개의 데이터가 나옴
+        for i in range(0,80): #79로 설정해야 80개의 데이터가 나옴
             book = Book()
             book_info["book_title"] = text_list[i][2].split('"')[1]
-            print(book_info["book_title"])
-            print("---------------------------")
+            # print(book_info["book_title"])
+            # print("---------------------------")
             book_info["book_img"] =  text_list[i][2].split('"')[3]
-            print(book_info["book_img"])
-            print("---------------------------")
+            # print(book_info["book_img"])
+            # print("---------------------------")
             book_info["book_url"] = text_list[i][1].split('"')[1]
-            print(book_info["book_url"])
+            # print(book_info["book_url"])
             
-            print("---------------------------")
+            # print("---------------------------")
             target2 = response.find('table', {'id':'category_layout', 'class':'list'})
             T2 = target.find_all('')
 

@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import ( TokenObtainPairView,TokenRefreshView, )
 from .models import User
-from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer, ProfileSerializer
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
@@ -28,10 +28,26 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class MypageView(APIView):
-   def get(self, request, user_id):
+    def get(self, request, user_id):
         user = User.objects.get(id=user_id)
         serializer = UserMypageSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)      
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+
+    def put(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        if request.user == user:
+            serializer = ProfileSerializer(user, data = request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN) 
+
+
+
+
 
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]

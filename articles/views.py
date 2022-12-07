@@ -9,6 +9,11 @@ from django.db.models import Count
 from articles import crowling, function
 import json
 
+import json , csv, os, requests
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "onepaper.settings")
+import django
+django.setup()
+
 # crowling.function()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
@@ -108,8 +113,13 @@ class LikeView(APIView): #좋아요
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
 
+with open('bookdata.csv', 'w', newline='') as csvfile:
+    fieldnames = ['book_img','book_name','book_content', 'book_link']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
+    writer.writeheader()
 
-
+    for book in Book.objects.all():
+        writer.writerow({'book_img':book.img_url,'book_name':book.book_title,'book_content':book.book_content, 'book_link':book.book_link })
 
 
