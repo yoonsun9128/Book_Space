@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Article, Comment
+from articles.models import Article, Comment, User
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -34,8 +34,13 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
     def get_likes_count(self, obj):
+        
         return obj.likes.count()
+
+    def get_username(self, obj):
+        return obj.user.username
 
     class Meta:
         model = Article
