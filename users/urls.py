@@ -10,6 +10,8 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('<int:user_id>/', views.MypageView.as_view(), name='MypageView'),
     
+    
+    path('', views.RecommendView.as_view(), name='recommend_view'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     # 유효한 이메일이 유저에게 전달

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from articles.serializers import ArticleImageSerializer
+from articles.serializers import ArticleImageSerializer, BookRecommendSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -78,4 +78,10 @@ class ProfileSerializer(serializers.ModelSerializer):# 유저 프로필 수정
     passwordcheck = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = User
-        fields = ("email", "username", "profile_img","password", "passwordcheck")        
+        fields = ("email", "username", "profile_img","password", "passwordcheck")   
+        
+class RecommendSerializer(serializers.ModelSerializer):
+    select_books = BookRecommendSerializer(many=True, read_only=True)
+    class Meta:
+        model = User
+        fields = ("select_books",)     
