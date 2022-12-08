@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import permissions
+from django.db.models import Q
 from articles.models import Article, Comment, Book
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer
 from rest_framework.generics import get_object_or_404
@@ -9,6 +10,9 @@ from django.db.models import Count
 from articles import crowling
 import json
 from itertools import chain
+
+# 파일 저장
+
 import random
 
 
@@ -53,7 +57,7 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
             random_book = random.sample(book, 3)
             serializer = BookSerializer(random_book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
@@ -95,6 +99,19 @@ class ArticleEditView(APIView):
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
 
+class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
+    def get(self, request):
+        print(request.data)
+        search_title = request.data.get('search_content')
+        search_title = search_title.replace(" ","")
+        if search_title == None :
+            book = Book.objects.all()
+        elif search_title:
+            book = Book.objects.filter(Q(book_title__icontains=search_title))
+        serializer = BookSerializer(book, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 class CommentEditView(APIView):
     def put(self, request, article_id, comment_id):
@@ -133,7 +150,7 @@ class LikeView(APIView): #좋아요
 #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 #     writer.writeheader()
-    
+
 #     for book in Book.objects.all():
 #         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
 
