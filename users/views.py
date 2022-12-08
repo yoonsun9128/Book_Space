@@ -11,9 +11,6 @@ from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 
 
-
-
-
 class UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -31,7 +28,7 @@ class MypageView(APIView):
     def get(self, request, user_id):
         user = User.objects.get(id=user_id)
         serializer = UserMypageSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK) 
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
@@ -43,7 +40,7 @@ class MypageView(APIView):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN) 
+            return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
 
 

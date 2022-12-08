@@ -46,7 +46,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'is_admin')
     list_filter = ('is_admin',) # 무엇으로 필터할 수 있는지
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password',"profile_img")}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
 
