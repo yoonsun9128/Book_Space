@@ -20,20 +20,8 @@ django.setup()
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
-        test = request.data.get("select_books_id")
-        userbook_list = Book.objects.filter(id__in=test)
         best_list = Book.objects.all()
-        book_name_list = []
-        for book in userbook_list:
-            book_name_list.append(book.book_title)
-        recommed_list = function.select_recommendations(book_name_list)
-        result_list = []
-        for result in recommed_list:
-            result_book = Book.objects.get(book_title = result)
-            result_list.append(result_book)
-        total_book_list = list(chain(result_list,best_list))
-        print(total_book_list)
-        serializer = BookSerializer(total_book_list, many=True)
+        serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request): # 게시글 작성
@@ -43,9 +31,21 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
-
-
-
+class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
+    def get(self, request):
+        test = request.data.get('select_books_id')
+        userbook_list = Book.objects.filter(id__in=test)
+        book_name_list = []
+        for book in userbook_list:
+            book_name_list.append(book.book_title)
+        recommend_list = function.select_recommendations(book_name_list)
+        result_list =[]
+        for result in recommend_list:
+            result_book = Book.objects.get(book_title = result)
+            result_list.append(result_book)
+        serializer = BookSerializer(result_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
