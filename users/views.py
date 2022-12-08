@@ -4,13 +4,12 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import ( TokenObtainPairView,TokenRefreshView, )
 from .models import User
-from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer, ProfileSerializer
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer, ProfileSerializer, RecommendSerializer
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
-
-
+from django.shortcuts import redirect
 
 
 
@@ -53,10 +52,11 @@ class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
-        self.object = confirmation = self.get_object()
+        self.object = confirmation=self.get_object()
         confirmation.confirm(self.request)
+        print("-----------------------------------------")
         # A React Router Route will handle the failure scenario
-        return HttpResponseRedirect('/') # 인증성공
+        return redirect('http://127.0.0.1:5500/templates/main.html') # 인증성공
 
     def get_object(self, queryset=None):
         key = self.kwargs['key']
@@ -75,4 +75,14 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
+    
+class RecommendView(APIView):
+    def post(self, request):
+        serializer = RecommendSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+            
 

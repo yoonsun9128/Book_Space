@@ -24,3 +24,4 @@ class Book(models.Model):
     book_content = models.TextField(blank=True)
     book_link = models.TextField()
     
+

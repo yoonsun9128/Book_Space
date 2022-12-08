@@ -63,7 +63,14 @@ class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 �
         model = Article
         fields = ("image",)
 
+
+
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = "__all__"
+        
+class BookRecommendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id",)

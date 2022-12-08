@@ -40,6 +40,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=100)
     profile_img = models.ImageField(null=True, blank=True, upload_to='users')
     like = models.BooleanField(default=False)
+    select_books = models.ManyToManyField('articles.Book', related_name="book_user")
 
     objects = UserManager()
 

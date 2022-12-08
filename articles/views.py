@@ -6,9 +6,10 @@ from articles.models import Article, Comment, Book
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
-from articles import crowling, function
+from articles import crowling
 import json
 from itertools import chain
+import random
 
 
 import json , csv, os, requests
@@ -17,6 +18,8 @@ import django
 django.setup()
 
 # crowling.function()
+
+
 
 class ArticleView(APIView): #게시글 불러오기(인기글로) main1
     def get(self, request):
@@ -33,17 +36,22 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
             return Response(serializer.errors)
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
-        test = request.data.get('select_books_id')
-        userbook_list = Book.objects.filter(id__in=test)
-        book_name_list = []
-        for book in userbook_list:
-            book_name_list.append(book.book_title)
-        recommend_list = function.select_recommendations(book_name_list)
-        result_list =[]
-        for result in recommend_list:
-            result_book = Book.objects.get(book_title = result)
-            result_list.append(result_book)
-        serializer = BookSerializer(result_list, many=True)
+        if request.user.is_authenticated:
+            test = request.data.get('select_books')
+            userbook_list = Book.objects.filter(id__in=test)
+            book_name_list = []
+            for book in userbook_list:
+                book_name_list.append(book.book_title)
+            recommend_list = function.select_recommendations(book_name_list)
+            result_list =[]
+            for result in recommend_list:
+                result_book = Book.objects.get(book_title = result)
+                result_list.append(result_book)
+            serializer = BookSerializer(result_list, many=True)
+        else:
+            book = Book.objects.all()
+            random_book = random.sample(book, 3)
+            serializer = BookSerializer(random_book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class ArticleListView(APIView): # 피드페이지
@@ -121,12 +129,12 @@ class LikeView(APIView): #좋아요
 
 # csv 만들기
 # with open('bookdata.csv', 'w', newline='') as csvfile:
-#     fieldnames = ['book_img','book_name','book_content', 'book_link']
+#     fieldnames = ['book_id','book_title']
 #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 #     writer.writeheader()
     
 #     for book in Book.objects.all():
-#         writer.writerow({'book_img':book.img_url,'book_name':book.book_title,'book_content':book.book_content, 'book_link':book.book_link })
+#         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
 
 
