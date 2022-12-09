@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from django.db.models import Q
 from articles.models import Article, Comment, Book
-from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer
+from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
@@ -12,10 +12,7 @@ import json
 from itertools import chain
 
 # 파일 저장
-
 import random
-
-
 import json , csv, os, requests
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "onepaper.settings")
 import django
@@ -31,13 +28,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request): # 게시글 작성
-        serializer = ArticleCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
         if request.user.is_authenticated:
@@ -99,10 +90,20 @@ class ArticleDetailView(APIView):
 class CreateArticleView(APIView):
     def get(self, request, book_id):
         book_id = get_object_or_404(Book, id=book_id)
+        print(book_id.book_title)
+        serializer = BookRecommendSerializer(book_id)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, book_id):
-        book_id = get_object_or_404(Book, id=book_id)
-        serializer =
+        book = get_object_or_404(Book, id=book_id)
+        title = book.book_title
+        book_id = book.id
+        serializer = ArticleAddSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, select_book_id=book_id, title=title)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
     def get(self, request):
@@ -115,6 +116,14 @@ class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
             book = Book.objects.filter(Q(book_title__icontains=search_title))
         serializer = BookSerializer(book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request): # 게시글 작성
+        serializer = ArticleCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
 
 
 
