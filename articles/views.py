@@ -9,7 +9,6 @@ from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
 import json
-from itertools import chain
 
 # 파일 저장
 import random
@@ -28,8 +27,6 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-
-
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
@@ -89,14 +86,14 @@ class ArticleDetailView(APIView):
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
 
-class CreateArticleView(APIView):
+class CreateArticleView(APIView): 
     def get(self, request, book_id):
         book_id = get_object_or_404(Book, id=book_id)
         print(book_id.book_title)
         serializer = BookRecommendSerializer(book_id)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request, book_id):
+    def post(self, request, book_id): #main2에서 검색해서 책 선택하고 게시글 작성으로 갈 때 post
         book = get_object_or_404(Book, id=book_id)
         title = book.book_title
         book_id = book.id
@@ -119,14 +116,8 @@ class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
         serializer = BookSerializer(book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request): # 게시글 작성
+    def post(self, request): # 새로작성 하기 버튼 눌렀을 때
         serializer = ArticleCreateSerializer(data=request.data)
-        # book = request.data
-        # print("전체자료", book)
-        # book.get('title')
-        # book_title = list(book.values())[0]
-        # print(book_title)
-        # serializer2 = BookSerializer(data=book_title)
         serializer.is_valid(raise_exception=True) # True면 여기서 코드가 끝남
         # serializer2.is_valid(raise_exception=True)
         serializer.save(user=request.user)

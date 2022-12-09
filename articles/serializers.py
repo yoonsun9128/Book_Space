@@ -54,7 +54,13 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = "__all__"
-''
+
+class ArticleAddSerializer(serializers.ModelSerializer): #책을 선택 후 게시글 작성
+    class Meta:
+        model = Article
+        fields = ("image", "content", "rating")
+
+
 class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
