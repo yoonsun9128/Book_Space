@@ -38,14 +38,9 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
-    username = serializers.SerializerMethodField()
+
     def get_likes_count(self, obj):
-
-
         return obj.likes.count()
-
-    def get_username(self, obj):
-        return obj.user.username
 
     def get_username(self, obj):
         return obj.user.username
@@ -60,11 +55,15 @@ class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 �
         model = Article
         fields = ("title", "image", "content","select_book", "rating")
 
+class ArticleAddSerializer(serializers.ModelSerializer): #책을 선택 후 게시글 작성
+    class Meta:
+        model = Article
+        fields = ("image", "content", "rating")
+
 class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 모든 게시글이미지를 들고오기 위한 시리얼라이즈
     class Meta:
         model = Article
         fields = ("image","id")
-
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -75,4 +74,4 @@ class BookSerializer(serializers.ModelSerializer):
 class BookRecommendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ("id",)
+        fields = ("id","book_title")
