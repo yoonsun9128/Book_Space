@@ -4,14 +4,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Book(models.Model):
     book_title = models.CharField(max_length=50)
-    img_url = models.TextField()
+    img_url = models.TextField(null=True)
     book_content = models.TextField(blank=True)
-    book_link = models.TextField()
+    book_link = models.TextField(null=True)
 
 class Article(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.TextField()
-    select_book = models.ForeignKey(Book, on_delete=models.PROTECT)
+    select_book = models.ForeignKey(Book, on_delete=models.PROTECT, null=True)
     content = models.TextField()
     image = models.ImageField(null=False)
     rating = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)])
