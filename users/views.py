@@ -47,15 +47,13 @@ class MypageView(APIView):
 
 
 
-
-
 class ConfirmEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, *args, **kwargs):
         self.object = confirmation=self.get_object()
         confirmation.confirm(self.request)
-        print("-----------------------------------------")
+
         # A React Router Route will handle the failure scenario
         return redirect('http://127.0.0.1:5500/templates/main.html') # 인증성공
 

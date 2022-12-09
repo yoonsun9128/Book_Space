@@ -41,14 +41,14 @@ class User(AbstractBaseUser):
     profile_img = models.ImageField(null=True, blank=True, upload_to='users')
     like = models.BooleanField(default=False)
     select_books = models.ManyToManyField('articles.Book', related_name="book_user")
-
+    
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
-    def __str__(self):
-        return self.username
+    # def __str__(self):
+    #     return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
