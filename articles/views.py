@@ -27,6 +27,8 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
 
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
@@ -116,14 +118,25 @@ class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
             book = Book.objects.filter(Q(book_title__icontains=search_title))
         serializer = BookSerializer(book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def post(self, request): # 게시글 작성
         serializer = ArticleCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
+        # book = request.data
+        # print("전체자료", book)
+        # book.get('title')
+        # book_title = list(book.values())[0]
+        # print(book_title)
+        # serializer2 = BookSerializer(data=book_title)
+        serializer.is_valid(raise_exception=True) # True면 여기서 코드가 끝남
+        # serializer2.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        # serializer2.save(book_title=book_title)
+        return Response(serializer.data)
+    
+#  'title': ['누가 내 머리에 똥쌌어?']
+#  'content': ['사장님 너무']
+#  'rating': ['5']
+#  'image': [<InMemoryUploadedFile: book.jpg(image/jpeg)>]}>
 
 
 
@@ -167,5 +180,6 @@ class LikeView(APIView): #좋아요
 
 #     for book in Book.objects.all():
 #         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
+
 
 
