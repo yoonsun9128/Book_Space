@@ -84,9 +84,6 @@ class ArticleDetailView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ArticleEditView(APIView):
     def put(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
         if request.user == article.user:
@@ -98,6 +95,14 @@ class ArticleEditView(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
+
+class CreateArticleView(APIView):
+    def get(self, request, book_id):
+        book_id = get_object_or_404(Book, id=book_id)
+
+    def post(self, request, book_id):
+        book_id = get_object_or_404(Book, id=book_id)
+        serializer =
 
 class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
     def get(self, request):
