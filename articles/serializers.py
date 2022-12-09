@@ -10,7 +10,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("user", "content", "created_at", "updated_at")
+        fields = ("user", "content", "created_at", "updated_at", "id")
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -22,11 +22,13 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 class ArticleDetailSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     comment_set = CommentSerializer(many=True)
-
+    created_at = serializers.SerializerMethodField()
 
     def get_user(self, obj):
-        return obj.user.email
+        return obj.user.username
 
+    def get_created_at(self, obj):
+        return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
     class Meta:
         model = Article
         fields = "__all__"
