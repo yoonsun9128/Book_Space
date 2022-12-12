@@ -8,6 +8,7 @@ from articles.serializers import ArticleSerializer, ArticleCreateSerializer, Art
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
+from django.db.models import Q
 import json
 
 # 파일 저장
@@ -89,7 +90,6 @@ class ArticleDetailView(APIView):
 class CreateArticleView(APIView):
     def get(self, request, book_id):
         book_id = get_object_or_404(Book, id=book_id)
-        print(book_id.book_title)
         serializer = BookRecommendSerializer(book_id)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -107,15 +107,12 @@ class CreateArticleView(APIView):
 class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
     def get(self, request):
         search_title = request.GET.get('search_content')
-        print("========들어오니",search_title)
-        print("========들어오니",type(search_title))
         if search_title == None :
             book = Book.objects.all()
         elif search_title:
             search_title = search_title.replace(" ","")
             book = Book.objects.filter(Q(book_title__icontains=search_title))
         serializer = BookSerializer(book, many=True)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request): # 새로작성 하기 버튼 눌렀을 때
@@ -157,15 +154,15 @@ class LikeView(APIView): #좋아요
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
 
+
 # csv 만들기
 # with open('bookdata.csv', 'w', newline='') as csvfile:
 #     fieldnames = ['book_id','book_title']
 #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 #     writer.writeheader()
-
+    
 #     for book in Book.objects.all():
 #         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
-
 
 
