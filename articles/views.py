@@ -26,7 +26,7 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
@@ -86,7 +86,7 @@ class ArticleDetailView(APIView):
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
 
-class CreateArticleView(APIView): 
+class CreateArticleView(APIView):
     def get(self, request, book_id):
         book_id = get_object_or_404(Book, id=book_id)
         print(book_id.book_title)
@@ -106,28 +106,23 @@ class CreateArticleView(APIView):
 
 class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
     def get(self, request):
-        print(request.data)
-        search_title = request.data.get('search_content')
-        search_title = search_title.replace(" ","")
+        search_title = request.GET.get('search_content')
+        print("========들어오니",search_title)
+        print("========들어오니",type(search_title))
         if search_title == None :
             book = Book.objects.all()
         elif search_title:
+            search_title = search_title.replace(" ","")
             book = Book.objects.filter(Q(book_title__icontains=search_title))
         serializer = BookSerializer(book, many=True)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def post(self, request): # 새로작성 하기 버튼 눌렀을 때
         serializer = ArticleCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True) # True면 여기서 코드가 끝남
-        # serializer2.is_valid(raise_exception=True)
         serializer.save(user=request.user)
-        # serializer2.save(book_title=book_title)
         return Response(serializer.data)
-    
-#  'title': ['누가 내 머리에 똥쌌어?']
-#  'content': ['사장님 너무']
-#  'rating': ['5']
-#  'image': [<InMemoryUploadedFile: book.jpg(image/jpeg)>]}>
 
 
 
