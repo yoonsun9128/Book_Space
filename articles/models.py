@@ -14,7 +14,7 @@ class Article(models.Model):
     select_book = models.ForeignKey(Book, on_delete=models.PROTECT, null=True)
     content = models.TextField()
     image = models.ImageField(null=False)
-    rating = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)])
+    rating = models.FloatField(validators=[MinValueValidator(0),MaxValueValidator(5)])
     likes = models.ManyToManyField(User, related_name="likes_articles")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
