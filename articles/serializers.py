@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from articles.models import Article, Comment, Book
+from users.models import User
+from django.urls import path
+# from users.serializers import UserMypageSerializer
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -33,11 +36,14 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         model = Article
         fields = "__all__"
 
-
-
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
+    profile_img = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Article
+        fields = "__all__"
 
     def get_likes_count(self, obj):
         return obj.likes.count()
@@ -45,10 +51,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     def get_username(self, obj):
         return obj.user.username
 
-    class Meta:
-        model = Article
-        fields = "__all__"
-
+    def get_profile_img(self, obj):
+        return obj.user.profile_img.url
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
