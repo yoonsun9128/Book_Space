@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email','username','profile_img' ,'password','passwordcheck')
+        fields = ('email','username' ,'password','passwordcheck')
         extra_kwargs={
             'password':{'write_only':True}
         }
@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, obj, validated_data):
-        obj.profile_img = validated_data.get('profile_img', obj.profile_img)
+        # obj.profile_img = validated_data.get('profile_img', obj.profile_img)
         obj.password = validated_data.get('password', obj.password)
         obj.username = validated_data.get('username', obj.username)
         obj.set_password(obj.password)
@@ -61,6 +61,11 @@ class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위
     class Meta:
         model = User
         fields =  ("id","username", "article_set", "profile_img" )
+
+class UserImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("profile_img",)
 
 
 class RecommendSerializer(serializers.ModelSerializer):
