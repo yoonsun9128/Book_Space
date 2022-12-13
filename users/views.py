@@ -4,15 +4,13 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import ( TokenObtainPairView,TokenRefreshView, )
 from .models import User
-from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer, ProfileSerializer, RecommendSerializer
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer, UserMypageSerializer, RecommendSerializer
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 
 from django.shortcuts import redirect
-
-
 
 class UserView(APIView):
     def post(self, request):
@@ -36,7 +34,7 @@ class MypageView(APIView):
     def put(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         if request.user == user:
-            serializer = ProfileSerializer(user, data = request.data, partial=True)
+            serializer = UserSerializer(user, data = request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -74,7 +72,7 @@ class ConfirmEmailView(APIView):
         qs = EmailConfirmation.objects.all_valid()
         qs = qs.select_related("email_address__user")
         return qs
-    
+
 class RecommendView(APIView):
     def post(self, request):
         serializer = RecommendSerializer(data=request.data, many=True)
@@ -83,5 +81,5 @@ class RecommendView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
-            
+
 
