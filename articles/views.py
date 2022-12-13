@@ -115,10 +115,10 @@ class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
             search_title = search_title.replace(" ","")
             book = Book.objects.filter(Q(book_title__icontains=search_title))
         serializer = BookSerializer(book, many=True)
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request): # 새로작성 하기 버튼 눌렀을 때
+        print(request.data)
         serializer = ArticleCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True) # True면 여기서 코드가 끝남
         serializer.save(user=request.user)

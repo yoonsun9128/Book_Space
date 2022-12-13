@@ -64,7 +64,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['email'] = user.email
 
-        return token      
+        return token
 
 
 
@@ -72,16 +72,16 @@ class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위
     article_set = ArticleImageSerializer(many=True)
     class Meta:
         model = User
-        fields =  ("username", "article_set", "profile_img" )
+        fields =  ("id","username", "article_set", "profile_img" )
 
 class ProfileSerializer(serializers.ModelSerializer):# 유저 프로필 수정
     passwordcheck = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = User
-        fields = ("email", "username", "profile_img","password", "passwordcheck")   
-        
+        fields = ("username", "profile_img","password", "passwordcheck")
+
 class RecommendSerializer(serializers.ModelSerializer):
     select_books = BookRecommendSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ("select_books",)     
+        fields = ("select_books",)
