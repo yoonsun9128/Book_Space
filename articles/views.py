@@ -71,7 +71,7 @@ class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK, charset="UTF-8")
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기

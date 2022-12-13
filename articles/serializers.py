@@ -7,13 +7,17 @@ from django.urls import path
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    profile_img = serializers.SerializerMethodField()
 
     def get_user(self, obj):
-        return obj.user.username
+        return obj.user.usernamea
+    
+    def get_profile_img(self, obj):
+        return obj.user.profile_img.url
 
     class Meta:
         model = Comment
-        fields = ("user", "content", "created_at", "updated_at", "id")
+        fields = ("user", "content", "created_at", "updated_at", "id", "profile_img")
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -26,12 +30,16 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     comment_set = CommentSerializer(many=True)
     created_at = serializers.SerializerMethodField()
+    profile_img = serializers.SerializerMethodField()
 
     def get_user(self, obj):
         return obj.user.username
 
     def get_created_at(self, obj):
         return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    
+    def get_profile_img(self, obj):
+        return obj.user.profile_img.url
     class Meta:
         model = Article
         fields = "__all__"
