@@ -74,19 +74,19 @@ class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 �
         Book.objects.create(book_title=validated_data.get('title', ''))
 
         return super().create(validated_data) # super가 부모 class에 존재하는 create함수를 실행시켜준다.
-    
+
 
 class ArticlePutSerializer(serializers.ModelSerializer): # 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
         fields = ("content", "rating", "image")
-        
-        
-        
-        
- 
 
-        
+
+
+
+
+
+
 class ArticleCreateSerializer2(serializers.ModelSerializer): # book id와 게시글이 저장되는 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
