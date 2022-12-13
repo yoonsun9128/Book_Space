@@ -28,7 +28,7 @@ def function():
             # print(book_info["book_title"])
             # print("---------------------------")
             book_info["book_img"] =  text_list[i][2].split('"')[3].replace("S", "XL")
-            print(book_info["book_img"])
+            # print(book_info["book_img"])
             # print("---------------------------")
             book_info["book_url"] = text_list[i][1].split('"')[1]
             # print(book_info["book_url"])

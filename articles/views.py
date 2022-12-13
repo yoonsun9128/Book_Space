@@ -10,19 +10,21 @@ from django.db.models import Count
 from articles import crowling
 from django.db.models import Q
 import json
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.viewsets import ModelViewSet
 
 # 파일 저장
 import random
 import json , csv, os, requests
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "onepaper.settings")
+
 import django
 django.setup()
 
-crowling.function()
+# crowling.function()
 
 
 
-class ArticleView(APIView): #게시글 불러오기(인기글로) main1
+class ArticleView(APIView): #메인페이지 전체리스트
     def get(self, request):
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
@@ -32,8 +34,13 @@ class ArticleView(APIView): #게시글 불러오기(인기글로) main1
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
         if request.user.is_authenticated:
-            test = request.data.get('select_books')
-            userbook_list = Book.objects.filter(id__in=test)
+            id_list = []
+            test = request.GET['select_books']
+            for i in test:
+                id_list.append(i)
+            while "," in id_list:
+                id_list.remove(",")
+            userbook_list = Book.objects.filter(id__in=id_list)
             book_name_list = []
             for book in userbook_list:
                 book_name_list.append(book.book_title)
@@ -45,15 +52,26 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
             serializer = BookSerializer(result_list, many=True)
         else:
             book = Book.objects.all()
-            random_book = random.sample(book, 3)
+            random_book = random.sample(list(book), 3)
             serializer = BookSerializer(random_book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RecommendView(APIView):
+    def get(self, request):
+        show_book = Book.objects.all()
+        show_book_list = random.sample(list(show_book),10)
+        serializer = BookSerializer(show_book_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
 
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         articles_list = Article.objects.all()
         serializer = ArticleSerializer(articles_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK, charset="UTF-8")
 
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기
@@ -164,6 +182,45 @@ class LikeView(APIView): #좋아요
         else:
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
+        
+        
+class BookListPagination(PageNumberPagination):
+    page_size = 9
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+ 
+class BookListView(APIView): #페이지네이션
+        serializer_class = BookSerializer
+        pagination_class = BookListPagination
+        @property
+        def paginator(self):
+            if not hasattr(self, '_paginator'):
+                if self.pagination_class is None:
+                    self._paginator = None
+                else:
+                    self._paginator = self.pagination_class()
+            else:
+                pass
+            return self._paginator
+        def paginate_queryset(self, queryset):
+            if self.paginator is None:
+                return None
+            return self.paginator.paginate_queryset(queryset, self.request, view=self)
+        def get_paginated_response(self, data):
+            assert self.paginator is not None
+            return self.paginator.get_paginated_response(data)
+        def get(self, request, format=None):   
+            book_list = Book.objects.all()
+            page = self.paginate_queryset(book_list)
+            if page is not None:
+                serializer = self.get_paginated_response(self.serializer_class(page, many=True).data)
+            else:
+                serializer = self.serializer_class(book_list, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+        
+        
 
 
 # csv 만들기
