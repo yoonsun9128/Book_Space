@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from django.db.models import Q
 from articles.models import Article, Comment, Book
-from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer
+from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer, ArticlePutSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
@@ -18,7 +18,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "onepaper.settings")
 import django
 django.setup()
 
-# crowling.function()
+crowling.function()
 
 
 
@@ -76,13 +76,24 @@ class ArticleDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     def put(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
+        data=request.data
+        image=data.get("image")
         if request.user == article.user:
-            serializer = ArticleCreateSerializer(article, data = request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            if image == "undefined":
+                data = dict({key: value for key, value in data.items() if value != "undefined"})
+                serializer = ArticlePutSerializer(article, data = data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                serializer = ArticlePutSerializer(article, data = data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
 
