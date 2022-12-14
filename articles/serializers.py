@@ -10,7 +10,7 @@ class CommentSerializer(serializers.ModelSerializer):
     profile_img = serializers.SerializerMethodField()
 
     def get_user(self, obj):
-        return obj.user.usernamea
+        return obj.user.username
     
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
