@@ -11,7 +11,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
-    
+
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
 
@@ -37,7 +37,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def get_created_at(self, obj):
         return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
-    
+
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
     class Meta:

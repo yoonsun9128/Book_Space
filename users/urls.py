@@ -5,9 +5,6 @@ from dj_rest_auth.registration.views import VerifyEmailView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('signup/', views.UserView.as_view(), name='UserView'),
-    path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('<int:user_id>/', views.MypageView.as_view(), name='MypageView'),
     path('<int:user_id>/image', views.MypageImage.as_view(), name='MypageImageView'),
 

@@ -63,9 +63,6 @@ class RecommendView(APIView):
         show_book_list = random.sample(list(show_book),10)
         serializer = BookSerializer(show_book_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-
-
 
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
@@ -144,7 +141,6 @@ class BookSearchView(APIView): #무슨책 있는지 검색하는 곳
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request): # 새로작성 하기 버튼 눌렀을 때
-        print(request.data)
         serializer = ArticleCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True) # True면 여기서 코드가 끝남
         serializer.save(user=request.user)
@@ -182,13 +178,13 @@ class LikeView(APIView): #좋아요
         else:
             article.likes.add(request.user)
             return Response({"message":"좋아요 등록 완료!"}, status=status.HTTP_200_OK)
-        
-        
+
+
 class BookListPagination(PageNumberPagination):
     page_size = 9
     page_size_query_param = 'page_size'
     max_page_size = 100
- 
+
 class BookListView(APIView): #페이지네이션
         serializer_class = BookSerializer
         pagination_class = BookListPagination
@@ -209,7 +205,7 @@ class BookListView(APIView): #페이지네이션
         def get_paginated_response(self, data):
             assert self.paginator is not None
             return self.paginator.get_paginated_response(data)
-        def get(self, request, format=None):   
+        def get(self, request, format=None):
             book_list = Book.objects.all()
             page = self.paginate_queryset(book_list)
             if page is not None:
@@ -218,9 +214,9 @@ class BookListView(APIView): #페이지네이션
                 serializer = self.serializer_class(book_list, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
-        
-        
+
+
+
 
 
 # csv 만들기
@@ -229,7 +225,7 @@ class BookListView(APIView): #페이지네이션
 #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 #     writer.writeheader()
-    
+
 #     for book in Book.objects.all():
 #         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
 
