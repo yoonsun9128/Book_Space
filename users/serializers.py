@@ -15,13 +15,6 @@ class UserSerializer(serializers.ModelSerializer):
             'password':{'write_only':True}
         }
 
-    def create(self, validated_data):
-        user = super().create(validated_data)
-        password = user.password
-        user.set_password(password)
-        user.save()
-        return user
-
     def update(self, obj, validated_data):
         # obj.profile_img = validated_data.get('profile_img', obj.profile_img)
         obj.password = validated_data.get('password', obj.password)
@@ -44,16 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
             )
 
         return data
-
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-
-        token['email'] = user.email
-
-        return token
-
 
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈

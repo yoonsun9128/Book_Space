@@ -5,7 +5,7 @@ import time
 
 def function():
     # book = Book()
-    for j in range(1,5): #1페이지 당 80개의 데이터
+    for j in range(1,3): #1페이지 당 80개의 데이터
         url = f"http://www.yes24.com/24/category/bestseller?CategoryNumber=001&sumgb=06&PageNumber={j}&FetchSize=80"
         print(j)
         response = requests.get(url).text.encode('utf-8')
@@ -25,15 +25,8 @@ def function():
         for i in range(0,80): #79로 설정해야 80개의 데이터가 나옴
             book = Book()
             book_info["book_title"] = text_list[i][2].split('"')[1]
-            # print(book_info["book_title"])
-            # print("---------------------------")
             book_info["book_img"] =  text_list[i][2].split('"')[3].replace("S", "XL")
-            # print(book_info["book_img"])
-            # print("---------------------------")
             book_info["book_url"] = text_list[i][1].split('"')[1]
-            # print(book_info["book_url"])
-            
-            # print("---------------------------")
             book_info["book_url"] = text_list[i][1].split('"')[1]
             each_raw = requests.get("http://www.yes24.com"+book_info["book_url"],
                     headers = {"User-Agent" : "Mozilla/5.0"})
@@ -45,7 +38,7 @@ def function():
                 contents = ''
             content_list = [x.get_text().replace('\r\n',"") for x in contents]
             book_info["book_content"] = ''.join(s for s in content_list)
-            
+
             book.book_title = book_info["book_title"]
             book.img_url = book_info["book_img"]
             book.book_link = "http://www.yes24.com"+book_info["book_url"]
