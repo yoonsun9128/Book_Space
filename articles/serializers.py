@@ -29,17 +29,21 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 class ArticleDetailSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     comment_set = CommentSerializer(many=True)
-    created_at = serializers.SerializerMethodField()
+    updated_at = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
+    likes_count = serializers.SerializerMethodField()
 
     def get_user(self, obj):
         return obj.user.username
 
-    def get_created_at(self, obj):
-        return obj.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    def get_updated_at(self, obj):
+        return obj.updated_at.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
     class Meta:
         model = Article
         fields = "__all__"
