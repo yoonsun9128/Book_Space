@@ -3,7 +3,9 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from .models import User
-from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer
+from articles.models import Article
+from django.db.models import Q
+from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, ArticleImageSerializer
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
@@ -29,8 +31,16 @@ class MypageView(APIView):
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
-    def delete(self, request, user_id):
-        return pass
+    # def delete(self, request, user_id):
+    #     return
+
+class LikeArticlesView(APIView):
+    def get(self, request, user_id):
+        book = Article.objects.filter(Q(likes=user_id))
+        print(book)
+        serializer = ArticleImageSerializer(book, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class MypageImage(APIView): #프로필 이미지만 수정파트
     def put(self, request, user_id):

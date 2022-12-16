@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('<int:user_id>/', views.MypageView.as_view(), name='MypageView'),
+    path('<int:user_id>/likes/', views.LikeArticlesView.as_view(), name="LikeArticlesView"), #좋아요 게시글 보기
     path('<int:user_id>/image', views.MypageImage.as_view(), name='MypageImageView'),
 
 
