@@ -31,8 +31,8 @@ class MypageView(APIView):
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
-    # def delete(self, request, user_id):
-    #     return
+
+
 
 class LikeArticlesView(APIView):
     def get(self, request, user_id):

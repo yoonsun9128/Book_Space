@@ -12,6 +12,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
+    
+    def get_user_id(self, obj):
+        return obj.user.id
 
     def get_user_id(self, obj):
         return obj.user.id
@@ -40,6 +43,9 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
+    
+    def get_user_id(self, obj):
+        return obj.user.id
 
     def get_user_id(self, obj):
         return obj.user.id
