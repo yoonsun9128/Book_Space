@@ -7,17 +7,21 @@ from django.urls import path
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
 
     def get_user(self, obj):
         return obj.user.username
+
+    def get_user_id(self, obj):
+        return obj.user.id
 
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
 
     class Meta:
         model = Comment
-        fields = ("user", "content", "created_at", "updated_at", "id", "profile_img")
+        fields = ("user", "content", "created_at", "updated_at", "id", "profile_img", "user_id")
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -28,6 +32,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
     comment_set = CommentSerializer(many=True)
     updated_at = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
@@ -35,6 +40,9 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
+
+    def get_user_id(self, obj):
+        return obj.user.id
 
     def get_updated_at(self, obj):
         return obj.updated_at.strftime('%Y-%m-%d %H:%M:%S')
@@ -52,6 +60,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
@@ -65,6 +74,9 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_profile_img(self, obj):
         return obj.user.profile_img.url
+
+    def get_user_id(self, obj):
+        return obj.user.id
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,10 +107,6 @@ class ArticlePutSerializer(serializers.ModelSerializer): # 게시글 작성 시�
 
 
 
-
-
-
-
 class ArticleCreateSerializer2(serializers.ModelSerializer): # book id와 게시글이 저장되는 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
@@ -107,7 +115,7 @@ class ArticleCreateSerializer2(serializers.ModelSerializer): # book id와 게시
 class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 모든 게시글이미지를 들고오기 위한 시리얼라이즈
     class Meta:
         model = Article
-        fields = ("image","id")
+        fields = ("image","id", "likes")
 
 
 class BookSerializer(serializers.ModelSerializer):
