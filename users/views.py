@@ -29,6 +29,9 @@ class MypageView(APIView):
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
+    def delete(self, request, user_id):
+        return pass
+
 class MypageImage(APIView): #프로필 이미지만 수정파트
     def put(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
