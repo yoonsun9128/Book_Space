@@ -18,6 +18,7 @@ class Article(models.Model):
     likes = models.ManyToManyField(User, related_name="likes_articles")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
+    is_private = models.BooleanField(default=False)
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

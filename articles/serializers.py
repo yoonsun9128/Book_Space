@@ -74,13 +74,13 @@ class BookSerializer(serializers.ModelSerializer):
 class ArticleAddSerializer(serializers.ModelSerializer): #책을 선택 후 게시글 작성
     class Meta:
         model = Article
-        fields = ("image", "content", "rating")
+        fields = ("image", "content", "rating", "is_private")
 
 
 class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
-        fields = ("title", "image", "content", "rating")
+        fields = ("title", "image", "content", "rating", "is_private")
 
     def create(self, validated_data):
         Book.objects.create(book_title=validated_data.get('title', ''))
@@ -91,18 +91,8 @@ class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 �
 class ArticlePutSerializer(serializers.ModelSerializer): # 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
-        fields = ("content", "rating", "image")
+        fields = ("content", "rating", "image", "is_private")
 
-
-
-
-
-
-
-class ArticleCreateSerializer2(serializers.ModelSerializer): # book id와 게시글이 저장되는 게시글 작성 시리얼라이즈
-    class Meta:
-        model = Article
-        fields = ("title", "image", "content", "rating")
 
 class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 모든 게시글이미지를 들고오기 위한 시리얼라이즈
     class Meta:
