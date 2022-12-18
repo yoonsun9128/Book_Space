@@ -2,6 +2,9 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_jwt.utils import jwt_decode_handler
 from .models import User
 from articles.models import Article
 from django.db.models import Q
@@ -31,8 +34,10 @@ class MypageView(APIView):
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
-
-
+    def delete(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 class LikeArticlesView(APIView):
     def get(self, request, user_id):
@@ -63,7 +68,6 @@ class ConfirmEmailView(APIView):
     def get(self, *args, **kwargs):
         self.object = confirmation=self.get_object()
         confirmation.confirm(self.request)
-
         # A React Router Route will handle the failure scenario
         return redirect('http://127.0.0.1:5500/templates/main.html') # 인증성공
 
