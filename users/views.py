@@ -2,13 +2,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_jwt.utils import jwt_decode_handler
-from .models import User
-from articles.models import Article
-from django.db.models import Q
-from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, ArticleImageSerializer
+from .models import User, Inquiry
+from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
@@ -99,3 +94,16 @@ class RecommendView(APIView):
             return Response(serializer.errors)
 
 
+class InquiryView(APIView):
+    def get(self, request):
+        inquiry = Inquiry.objects.all().order_by('-id')
+        serializer = InquirySerializer(inquiry, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = InquirySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)

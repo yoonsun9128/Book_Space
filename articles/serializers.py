@@ -5,6 +5,7 @@ from django.urls import path
 # from users.serializers import UserMypageSerializer
 
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
