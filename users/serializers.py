@@ -1,9 +1,23 @@
 from rest_framework import serializers
-from users.models import User
+from users.models import User, Inquiry
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from articles.serializers import ArticleImageSerializer, BookRecommendSerializer
 
+class InquirySerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    updated_at = serializers.SerializerMethodField()
 
+
+    def get_updated_at(self, obj):
+        return obj.updated_at.strftime('%Y-%m-%d')
+    
+    def get_user(self, obj):
+        return obj.user.email
+    
+    class Meta:
+        model = Inquiry
+        fields = "__all__"
+        
 class UserSerializer(serializers.ModelSerializer):
     passwordcheck = serializers.CharField(style={'input_type':'password'}, write_only=True)
 
@@ -42,7 +56,7 @@ class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위
     article_set = ArticleImageSerializer(many=True)
     class Meta:
         model = User
-        fields =  ("id","username", "article_set", "profile_img" )
+        fields =  ("id","username", "article_set", "profile_img", )
 
 class UserImageSerializer(serializers.ModelSerializer):
     class Meta:
