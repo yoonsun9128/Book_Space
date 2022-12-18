@@ -7,6 +7,7 @@ class Book(models.Model):
     img_url = models.TextField(null=True)
     book_content = models.TextField(blank=True)
     book_link = models.TextField(null=True)
+    book_genre = models.TextField(null = True)
 
 class Article(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
