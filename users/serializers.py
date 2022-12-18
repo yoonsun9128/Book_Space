@@ -7,7 +7,6 @@ from articles.serializers import ArticleImageSerializer, BookRecommendSerializer
 class UserSerializer(serializers.ModelSerializer):
     passwordcheck = serializers.CharField(style={'input_type':'password'}, write_only=True)
 
-
     class Meta:
         model = User
         fields = ('email','username' ,'password','passwordcheck')

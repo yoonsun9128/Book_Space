@@ -73,7 +73,7 @@ class   RecommendView(APIView):
 
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
-        articles_list = Article.objects.all()
+        articles_list = Article.objects.filter(is_private=False)
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
