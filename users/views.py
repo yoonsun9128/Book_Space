@@ -2,8 +2,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from articles.models import Article
 from .models import User, Inquiry
 from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer
+from articles.serializers import ArticleImageSerializer
+from django.db.models import Q
 
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
