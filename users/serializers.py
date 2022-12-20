@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from users.models import User, Inquiry
+from users.models import User, Inquiry, Taste
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from articles.serializers import ArticleImageSerializer, BookRecommendSerializer
 
@@ -69,3 +69,15 @@ class RecommendSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("select_books",)
+        
+class MainNumberousBookSerializer(serializers.ModelSerializer):
+    article_count = serializers.IntegerField(source='article_set.count', read_only=True)
+    class Meta:
+        model = User
+        fields =  ("id","username", "article_count")
+        
+
+class UserChoiceBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Taste
+        fields = ("choice",)

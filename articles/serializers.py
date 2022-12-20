@@ -62,13 +62,16 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = "__all__"
-
+        
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = "__all__"
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
-
     class Meta:
         model = Article
         fields = "__all__"
@@ -85,9 +88,10 @@ class ArticleSerializer(serializers.ModelSerializer):
     def get_user_id(self, obj):
         return obj.user.id
 
-class BookSerializer(serializers.ModelSerializer):
+
+class ArticleUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Book
+        model = Article
         fields = "__all__"
 
 class ArticleAddSerializer(serializers.ModelSerializer): #책을 선택 후 게시글 작성
@@ -128,3 +132,11 @@ class BookRecommendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ("id","book_title")
+        
+
+class ManyBookListSerializer(serializers.ModelSerializer):
+    article_count = serializers.IntegerField(source='article_set.count', read_only=True)
+    class Meta:
+        model = Book
+        fields = ("book_title", "article_count")
+        

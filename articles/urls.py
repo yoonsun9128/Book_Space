@@ -12,5 +12,7 @@ urlpatterns = [
     path('<int:article_id>/<int:comment_id>/', views.CommentEditView.as_view(), name='comment_edit_view'),
     path("like/<int:article_id>/", views.LikeView.as_view(), name="like_view"),
     path('pagination/', views.BookListView.as_view(), name='book_list_pagination'),
-    path('recommend/', views.RecommendView.as_view(), name="recommend_view")
+    path('recommend/', views.RecommendView.as_view(), name="recommend_view"),
+    path('popular-feed/', views.PopularFeedView.as_view(), name="popular_view"),
+    path('many-book/', views.ManyBookView.as_view(), name="many_book")
 ]

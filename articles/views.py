@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from django.db.models import Q
 from articles.models import Article, Comment, Book
-from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer, ArticlePutSerializer
+from users.models import User
+from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer, ArticlePutSerializer, ArticleUserSerializer, ManyBookListSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
 from articles import crowling
@@ -29,7 +30,22 @@ class ArticleView(APIView): #메인페이지 전체리스트
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
 
+
+class PopularFeedView(APIView): # 메인페이지 인기피드
+    def get(self, request):
+        popular_articles_list = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:3]
+        serializer = ArticleSerializer(popular_articles_list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ManyBookView(APIView): #많이 선택 된 책
+    def get(self, request):
+        a = Book.objects.all().annotate(num_likes=Count('article')).order_by('-num_likes', 'id')[:3]
+        serializer = ManyBookListSerializer(a, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
@@ -57,16 +73,17 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class   RecommendView(APIView):
+class RecommendView(APIView):
     def get(self, request):
-        genre = request.GET.get("genre_list", None)
-        print(genre)
+        # genre = request.GET.get("genre_list", None)
+        # print(genre)
 
-        if genre == "전체":
-            show_book = Book.objects.all()  
-        else:    
-            Test = request.GET["genre_list"]
-            show_book = Book.objects.filter(book_genre = Test)   
+        # if genre == "전체":
+        #     show_book = Book.objects.all()  
+        # else:    
+        #     Test = request.GET["genre_list"]
+        #     show_book = Book.objects.filter(book_genre = Test)
+        show_book = Book.objects.all()  
         show_book_list = random.sample(list(show_book),10)
         serializer = BookSerializer(show_book_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

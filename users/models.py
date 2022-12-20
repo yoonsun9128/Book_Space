@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import (BaseUserManager, AbstractBaseUser)
+
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, profile_img=None):
         if not email:
@@ -41,7 +42,6 @@ class User(AbstractBaseUser):
     profile_img = models.ImageField(null=True, blank=True, upload_to='users',default='fb-thankful.png')
     like = models.BooleanField(default=False)
     select_books = models.ManyToManyField('articles.Book', related_name="book_user")
-
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -72,3 +72,9 @@ class Inquiry(models.Model): #문의글
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
+
+
+class Taste(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    choice = models.IntegerField()
+    
