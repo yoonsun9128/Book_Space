@@ -8,7 +8,8 @@ urlpatterns = [
     path('<int:user_id>/', views.MypageView.as_view(), name='MypageView'),
     path('<int:user_id>/likes/', views.LikeArticlesView.as_view(), name="LikeArticlesView"), #좋아요 게시글 보기
     path('<int:user_id>/image', views.MypageImage.as_view(), name='MypageImageView'),
-
+    path('most-numberous/', views.MostNumberousBook.as_view(), name='most_numberous'),
+    path('user-choice/', views.UserChoiceBook.as_view(), name='user_choice'),
 
     path('', views.RecommendView.as_view(), name='recommend_view'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),

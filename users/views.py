@@ -4,14 +4,14 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from articles.models import Article
 from .models import User, Inquiry
-from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer
+from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer
 from articles.serializers import ArticleImageSerializer
+from articles.models import Article
 from django.db.models import Q
-
 from django.http import HttpResponseRedirect
 from rest_framework.permissions import AllowAny
 from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
-
+from django.db.models import Count
 from django.shortcuts import redirect
 
 class MypageView(APIView):
@@ -110,3 +110,22 @@ class InquiryView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+class MostNumberousBook(APIView):
+    def get(self, request):
+        user = User.objects.all().annotate(num_likes=Count('article')).order_by('-num_likes', 'id')[:3]
+        serializer = MainNumberousBookSerializer(user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserChoiceBook(APIView):
+    def post(self, request):
+        book_dict = request.data
+        book_list = book_dict.get("choice")
+        for i in book_list:
+            serializer = UserChoiceBookSerializer(data={"choice":i})
+            if serializer.is_valid():                
+                serializer.save(user=request.user)
+        return Response(serializer.data)
+
+
