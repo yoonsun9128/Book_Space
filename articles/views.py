@@ -57,7 +57,7 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class   RecommendView(APIView):
+class RecommendView(APIView):
     def get(self, request):
         genre = request.GET.get("genre_list", None)
         print(genre)
@@ -73,7 +73,14 @@ class   RecommendView(APIView):
 
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
-        articles_list = Article.objects.filter(is_private=False)
+        rank = request.GET.get("rank", None)
+        print(rank)
+        if rank == "시간순":
+            articles_list = Article.objects.filter(is_private=False).order_by("created_at")
+        elif rank == "좋아요순":
+            articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating') 
+        else:
+            articles_list = Article.objects.filter(is_private=False).order_by("-rating")     
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -189,7 +196,7 @@ class LikeView(APIView): #좋아요
 
 
 class BookListPagination(PageNumberPagination):
-    page_size = 9
+    page_size = 20
     page_size_query_param = 'page_size'
     max_page_size = 100
 
