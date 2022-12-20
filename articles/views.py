@@ -75,15 +75,14 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
 
 class RecommendView(APIView):
     def get(self, request):
-        # genre = request.GET.get("genre_list", None)
-        # print(genre)
+        genre = request.GET.get("genre_list", None)
+        print(genre)
 
-        # if genre == "전체":
-        #     show_book = Book.objects.all()  
-        # else:    
-        #     Test = request.GET["genre_list"]
-        #     show_book = Book.objects.filter(book_genre = Test)
-        show_book = Book.objects.all()  
+        if genre == "전체":
+            show_book = Book.objects.all()  
+        else:    
+            Test = request.GET["genre_list"]
+            show_book = Book.objects.filter(book_genre = Test)  
         show_book_list = random.sample(list(show_book),10)
         serializer = BookSerializer(show_book_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
