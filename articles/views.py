@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from django.db.models import Q
 from articles.models import Article, Comment, Book
-from users.models import User
+from users.models import User, Taste
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer, ArticlePutSerializer, ArticleUserSerializer, ManyBookListSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
@@ -13,6 +13,7 @@ from django.db.models import Q
 import json
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
+from articles.asd import recommendation
 
 # 파일 저장
 import random
@@ -49,28 +50,19 @@ class ManyBookView(APIView): #많이 선택 된 책
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
-        if request.user.is_authenticated:
-            id_list = []
-            test = request.GET['select_books']
-            for i in test:
-                id_list.append(i)
-            while "," in id_list:
-                id_list.remove(",")
-            userbook_list = Book.objects.filter(id__in=id_list)
-            book_name_list = []
-            for book in userbook_list:
-                book_name_list.append(book.book_title)
-            recommend_list = function.select_recommendations(book_name_list)
-            result_list =[]
-            for result in recommend_list:
-                result_book = Book.objects.get(book_title = result)
-                result_list.append(result_book)
-            serializer = BookSerializer(result_list, many=True)
-        else:
-            book = Book.objects.all()
-            random_book = random.sample(list(book), 3)
-            serializer = BookSerializer(random_book, many=True)
+        book_id_list = []
+        taste_id = Taste.objects.filter(user_id=request.user)
+        for i in taste_id:
+            book_id_list.append(i.choice)
+        recommend_list = recommendation(book_id_list)
+        result_list =[]
+        for result in recommend_list:
+            result_book = Book.objects.get(book_title = result)
+            result_list.append(result_book)
+        serializer = BookSerializer(result_list, many=True)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class RecommendView(APIView):

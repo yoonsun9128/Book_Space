@@ -14,5 +14,6 @@ urlpatterns = [
     path('pagination/', views.BookListView.as_view(), name='book_list_pagination'),
     path('recommend/', views.RecommendView.as_view(), name="recommend_view"),
     path('popular-feed/', views.PopularFeedView.as_view(), name="popular_view"),
-    path('many-book/', views.ManyBookView.as_view(), name="many_book")
+    path('many-book/', views.ManyBookView.as_view(), name="many_book"),
+
 ]

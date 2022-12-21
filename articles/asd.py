@@ -11,15 +11,15 @@ column=['userId','bookId','rating','book_title']
 data=data[column]
 data
 
+
 bookdata=data.pivot_table(index="bookId",  columns='userId')['rating']
 bookdata.fillna(-1, inplace=True)
 
-
 def sim_distance(data, n1, n2):
     sum=0
-    #두 사용자가 모두 본 영화를 기준으로 해야해서 i로 변수 통일(j따로 안 써줌)
+    #두 사용자가 모두 본 책을 기준으로 해야해서 i로 변수 통일(j따로 안 써줌)
     for i in data.loc[n1,data.loc[n1,:]>=0].index:
-         if data.loc[n2,i]>=0:
+        if data.loc[n2,i]>=0:
             sum+=pow(data.loc[n1,i]-data.loc[n2,i],2) #누적합
     return sqrt(1/(sum+1)) #유사도 형식으로 출력
 
