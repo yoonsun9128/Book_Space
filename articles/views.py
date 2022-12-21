@@ -8,9 +8,8 @@ from users.models import User, Taste
 from articles.serializers import ArticleSerializer, ArticleCreateSerializer, ArticleDetailSerializer, CommentCreateSerializer, BookSerializer,BookRecommendSerializer, ArticleAddSerializer, ArticlePutSerializer, ArticleUserSerializer, ManyBookListSerializer
 from rest_framework.generics import get_object_or_404
 from django.db.models import Count
-from articles import crowling
-from django.db.models import Q
 import json
+from articles import crowling
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 from articles.asd import recommendation
@@ -31,8 +30,8 @@ class ArticleView(APIView): #메인페이지 전체리스트
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
+
+
 
 
 class PopularFeedView(APIView): # 메인페이지 인기피드
@@ -71,10 +70,10 @@ class RecommendView(APIView):
         print(genre)
 
         if genre == "전체":
-            show_book = Book.objects.all()  
-        else:    
+            show_book = Book.objects.all()
+        else:
             Test = request.GET["genre_list"]
-            show_book = Book.objects.filter(book_genre = Test)  
+            show_book = Book.objects.filter(book_genre = Test)
         show_book_list = random.sample(list(show_book),10)
         serializer = BookSerializer(show_book_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -86,9 +85,9 @@ class ArticleListView(APIView): # 피드페이지
         if rank == "시간순":
             articles_list = Article.objects.filter(is_private=False).order_by("created_at")
         elif rank == "좋아요순":
-            articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating') 
+            articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating')
         else:
-            articles_list = Article.objects.filter(is_private=False).order_by("-rating")     
+            articles_list = Article.objects.filter(is_private=False).order_by("-rating")
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -244,12 +243,12 @@ class BookListView(APIView): #페이지네이션
 
 # csv 만들기
 # with open('bookdata.csv', 'w', newline='') as csvfile:
-#     fieldnames = ['book_id','book_title']
+#     fieldnames = ['book_id','book_title','book_genre']
 #     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 #     writer.writeheader()
 
 #     for book in Book.objects.all():
-#         writer.writerow({'book_id':book.id, "book_title":book.book_title,})
+#         writer.writerow({'book_id':book.id, "book_title":book.book_title, "book_genre":book.book_genre})
 
 
