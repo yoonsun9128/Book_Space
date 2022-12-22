@@ -10,7 +10,6 @@ urlpatterns = [
     path('<int:user_id>/image', views.MypageImage.as_view(), name='MypageImageView'),
     path('most-numberous/', views.MostNumberousBook.as_view(), name='most_numberous'),
     path('user-choice/', views.UserChoiceBook.as_view(), name='user_choice'),
-
     path('', views.RecommendView.as_view(), name='recommend_view'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
@@ -19,4 +18,5 @@ urlpatterns = [
     # 유저가 클릭한 이메일(=링크) 확인
     re_path(r'^account-confirm-email/(?P<key>[-:\w]+)/$', views.ConfirmEmailView.as_view(), name='account_confirm_email'),
     path('inquiry/', views.InquiryView.as_view(), name='inquiry_view'),
+
 ]

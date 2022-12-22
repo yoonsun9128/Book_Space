@@ -81,3 +81,4 @@ class UserChoiceBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Taste
         fields = ("choice",)
+        
