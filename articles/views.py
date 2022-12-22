@@ -12,7 +12,7 @@ import json
 from articles import crowling
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
-from articles.asd import recommendation
+from articles.recom import recommendation
 
 # 파일 저장
 import random
@@ -49,14 +49,22 @@ class ManyBookView(APIView): #많이 선택 된 책
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
+        user_key = request.GET['user_key']
         book_id_list = []
-        taste_id = Taste.objects.filter(user_id=request.user)
+        taste_id = Taste.objects.filter(user_id=int(user_key))
         for i in taste_id:
             book_id_list.append(i.choice)
-        recommend_list = recommendation(book_id_list)
-        result_list =[]
-        for result in recommend_list:
-            result_book = Book.objects.get(book_title = result)
+        recom_result = []
+        for j in book_id_list:
+            recommend_list = recommendation(j)
+            try:
+                for a in recommend_list:
+                    recom_result.append(a)
+            except TypeError:
+                pass
+        result_list = []
+        for result in recom_result:
+            result_book = Book.objects.get(id=result)
             result_list.append(result_book)
         serializer = BookSerializer(result_list, many=True)
 

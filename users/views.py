@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from articles.models import Article
-from .models import User, Inquiry
+from .models import User, Inquiry, Taste
 from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer
 from articles.serializers import ArticleImageSerializer
 from articles.models import Article
@@ -120,12 +120,17 @@ class MostNumberousBook(APIView):
 
 class UserChoiceBook(APIView):
     def post(self, request):
+        print(request.data)
         book_dict = request.data
         book_list = book_dict.get("choice")
+        user = Taste.objects.filter(user_id=request.user)
+        if user.count() >= 1:
+            user.delete()
         for i in book_list:
             serializer = UserChoiceBookSerializer(data={"choice":i})
-            if serializer.is_valid():                
+            if serializer.is_valid():
                 serializer.save(user=request.user)
         return Response(serializer.data)
+        
 
-
+    

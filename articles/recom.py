@@ -3,9 +3,9 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def recommendation (choice_id):
-    books=pd.read_csv("../articles/database/bookdata.csv", encoding='UTF-8')
-    ratings=pd.read_csv("../articles/database/ratings.csv", encoding='UTF-8')
+def recommendation(choice_id):
+    books=pd.read_csv("../BOOK_SPACE/articles/database/bookdata.csv", encoding='UTF-8')
+    ratings=pd.read_csv("../BOOK_SPACE/articles/database/ratings.csv", encoding='UTF-8')
 
     book_ratings = pd.merge(ratings,books, on="bookId" )
 
@@ -15,8 +15,11 @@ def recommendation (choice_id):
     result_cosine = cosine_similarity(user_book,user_book)
 
     item_based_collab = pd.DataFrame(result_cosine, index=user_book.index, columns=user_book.index)
-    result = item_based_collab[choice_id].sort_values(ascending=False)[:3]
-
-    return result
+    try:
+        result = item_based_collab[choice_id].sort_values(ascending=False)[:3]
+        result_id = list(result.index.values)
+        return result_id
+    except KeyError:
+        pass
 
 
