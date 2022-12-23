@@ -3,12 +3,12 @@ import pandas as pd
 from articles.models import Book
 import time
 
+
 def function():
     a = []
     # book = Book()
     for j in range(1,7): #1페이지 당 80개의 데이터
         url = f"http://www.yes24.com/24/category/bestseller?CategoryNumber=001&sumgb=06&PageNumber={j}&FetchSize=80"
-        print(j)
         response = requests.get(url).text.encode('utf-8')
         response = bs4.BeautifulSoup(response, 'html.parser')
 

@@ -27,7 +27,8 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs={
             'password':{'write_only':True}
         }
-
+  
+        
     def update(self, obj, validated_data):
         # obj.profile_img = validated_data.get('profile_img', obj.profile_img)
         obj.password = validated_data.get('password', obj.password)
@@ -50,7 +51,10 @@ class UserSerializer(serializers.ModelSerializer):
             )
 
         return data
-
+    def validate_email(self, data):
+        if User.objects.filter(email=data).exists():
+            raise serializers.ValidationError("이메일이 이미 존재합니다.")
+        return data    
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
     article_set = ArticleImageSerializer(many=True)
