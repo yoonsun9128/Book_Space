@@ -99,6 +99,12 @@ class ArticleListView(APIView): # 피드페이지
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class FeedChoiceBookView(APIView):
+    def get(self, request, book_id):
+        articles = Article.objects.filter(select_book =book_id).annotate(num_likes=Count('likes')).order_by('-num_likes')
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기
         article = get_object_or_404(Article, id=article_id)
@@ -121,15 +127,20 @@ class ArticleDetailView(APIView):
     def put(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
         data=request.data
+        print(data)
         image=data.get("image")
+        rating=data.get("rating")
+        content=data.get("content")
         if request.user == article.user:
             if image == "undefined":
                 data = dict({key: value for key, value in data.items() if value != "undefined"})
+                print("1", data)
                 serializer = ArticlePutSerializer(article, data = data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
+                    print(serializer.errors)
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = ArticlePutSerializer(article, data = data, partial=True)
@@ -137,6 +148,7 @@ class ArticleDetailView(APIView):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
+                    print(serializer.errors)
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)

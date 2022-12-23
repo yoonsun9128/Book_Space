@@ -13,7 +13,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
-    
+
     def get_user_id(self, obj):
         return obj.user.id
 
@@ -44,7 +44,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def get_user(self, obj):
         return obj.user.username
-    
+
     def get_user_id(self, obj):
         return obj.user.id
 
@@ -62,16 +62,18 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = "__all__"
-        
+
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = "__all__"
+
 class ArticleSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
+
     class Meta:
         model = Article
         fields = "__all__"
@@ -114,7 +116,7 @@ class ArticleCreateSerializer(serializers.ModelSerializer): # 게시글 작성 �
 class ArticlePutSerializer(serializers.ModelSerializer): # 게시글 작성 시리얼라이즈
     class Meta:
         model = Article
-        fields = ("content", "rating", "image", "is_private")
+        fields = ("content", "image", "is_private")
 
 
 class ArticleImageSerializer(serializers.ModelSerializer):# 마이페이지에 모든 게시글이미지를 들고오기 위한 시리얼라이즈
@@ -132,11 +134,11 @@ class BookRecommendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ("id","book_title")
-        
+
 
 class ManyBookListSerializer(serializers.ModelSerializer):
     article_count = serializers.IntegerField(source='article_set.count', read_only=True)
     class Meta:
         model = Book
         fields = ("book_title", "article_count")
-        
+
