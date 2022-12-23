@@ -54,7 +54,9 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_email(self, data):
         if User.objects.filter(email=data).exists():
             raise serializers.ValidationError("이메일이 이미 존재합니다.")
-        return data    
+        return data
+    
+    
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
     article_set = ArticleImageSerializer(many=True)
