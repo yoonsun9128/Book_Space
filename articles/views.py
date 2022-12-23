@@ -99,6 +99,12 @@ class ArticleListView(APIView): # 피드페이지
         serializer = ArticleSerializer(articles_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class FeedChoiceBookView(APIView):
+    def get(self, request, book_id):
+        articles = Article.objects.filter(select_book =book_id).annotate(num_likes=Count('likes')).order_by('-num_likes')
+        serializer = ArticleSerializer(articles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 class ArticleDetailView(APIView):
     def get(self, request, article_id): # 게시글&댓글 보여주기
         article = get_object_or_404(Article, id=article_id)
