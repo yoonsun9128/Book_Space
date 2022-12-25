@@ -14,6 +14,9 @@ from allauth.account.models import EmailConfirmation, EmailConfirmationHMAC
 from django.db.models import Count
 from django.shortcuts import redirect
 
+# from django.utils.http import urlsafe_base64_decode
+# from django.utils.encoding import force_text
+
 class MypageView(APIView):
     def get(self, request, user_id):
         user = User.objects.get(id=user_id)
@@ -67,7 +70,7 @@ class ConfirmEmailView(APIView):
         confirmation.confirm(self.request)
         # A React Router Route will handle the failure scenario
         return redirect('http://127.0.0.1:5500/templates/main.html') # 인증성공
-
+ 
     def get_object(self, queryset=None):
         key = self.kwargs['key']
         email_confirmation = EmailConfirmationHMAC.from_key(key)

@@ -32,8 +32,6 @@ class ArticleView(APIView): #메인페이지 전체리스트
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
 class PopularFeedView(APIView): # 메인페이지 인기피드
     def get(self, request):
         popular_articles_list = Article.objects.annotate(num_likes=Count('likes')).order_by('-num_likes', 'id')[:3]
@@ -49,6 +47,7 @@ class ManyBookView(APIView): #많이 선택 된 책
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
+        
         user_key = request.GET['user_key']
         book_id_list = []
         taste_id = Taste.objects.filter(user_id=int(user_key))
@@ -71,7 +70,6 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class RecommendView(APIView):
     def get(self, request):
         genre = request.GET.get("genre_list", None)
@@ -89,7 +87,7 @@ class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         rank = request.GET.get("rank", None)
         if rank == "시간순":
-            articles_list = Article.objects.filter(is_private=False).order_by("created_at")
+            articles_list = Article.objects.filter(is_private=False).order_by("-created_at")
         elif rank == "좋아요순":
             articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating')
         else:
@@ -126,8 +124,6 @@ class ArticleDetailView(APIView):
         article = get_object_or_404(Article, id=article_id)
         data=request.data
         image=data.get("image")
-        rating=data.get("rating")
-        content=data.get("content")
         if request.user == article.user:
             if image == "undefined":
                 data = dict({key: value for key, value in data.items() if value != "undefined"})
@@ -159,7 +155,7 @@ class CreateArticleView(APIView):
         title = book.book_title
         book_id = book.id
         serializer = ArticleAddSerializer(data = request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(): 
             serializer.save(user=request.user, select_book_id=book_id, title=title)
             return Response(serializer.data)
         else:

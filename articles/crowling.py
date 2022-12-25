@@ -3,6 +3,7 @@ import pandas as pd
 from articles.models import Book
 import time
 
+
 def function():
     a = []
     # book = Book()
