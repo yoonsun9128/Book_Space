@@ -61,7 +61,6 @@ def function():
             book.book_content = book_info["book_content"]
             book.book_genre = genre
             book.save()
-    print(set(a))        
 
 
 
