@@ -40,7 +40,6 @@ class MypageView(APIView):
 class LikeArticlesView(APIView):
     def get(self, request, user_id):
         book = Article.objects.filter(Q(likes=user_id))
-        print(book)
         serializer = ArticleImageSerializer(book, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -120,7 +119,6 @@ class MostNumberousBook(APIView):
 
 class UserChoiceBook(APIView):
     def post(self, request):
-        print(request.data)
         book_dict = request.data
         book_list = book_dict.get("choice")
         user = Taste.objects.filter(user_id=request.user)

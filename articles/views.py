@@ -75,7 +75,6 @@ class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인�
 class RecommendView(APIView):
     def get(self, request):
         genre = request.GET.get("genre_list", None)
-        print(genre)
 
         if genre == "전체":
             show_book = Book.objects.all()
@@ -89,7 +88,6 @@ class RecommendView(APIView):
 class ArticleListView(APIView): # 피드페이지
     def get(self, request):
         rank = request.GET.get("rank", None)
-        print(rank)
         if rank == "시간순":
             articles_list = Article.objects.filter(is_private=False).order_by("created_at")
         elif rank == "좋아요순":
@@ -127,20 +125,17 @@ class ArticleDetailView(APIView):
     def put(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
         data=request.data
-        print(data)
         image=data.get("image")
         rating=data.get("rating")
         content=data.get("content")
         if request.user == article.user:
             if image == "undefined":
                 data = dict({key: value for key, value in data.items() if value != "undefined"})
-                print("1", data)
                 serializer = ArticlePutSerializer(article, data = data, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
-                    print(serializer.errors)
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 serializer = ArticlePutSerializer(article, data = data, partial=True)
@@ -148,7 +143,6 @@ class ArticleDetailView(APIView):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 else:
-                    print(serializer.errors)
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
