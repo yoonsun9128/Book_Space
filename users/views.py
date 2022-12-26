@@ -4,7 +4,7 @@ from rest_framework import status, permissions
 from rest_framework.response import Response
 from articles.models import Article
 from .models import User, Inquiry, Taste
-from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer
+from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer, UserNameSerializer,UserPasswordSerializer
 from articles.serializers import ArticleImageSerializer
 from articles.models import Article
 from django.db.models import Q
@@ -25,13 +25,31 @@ class MypageView(APIView):
 
     def put(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
+        data = request.data
         if request.user == user:
-            serializer = UserSerializer(user, data = request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            if data['password'] =="":
+                data = dict({key:value for key, value in data.items() if value !=""})
+                serializer = UserNameSerializer(user, data = request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            elif data['username'] =="":
+                data = dict({key:value for key, value in data.items() if value !=""})
+                serializer = UserPasswordSerializer(user, data = request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                serializer = UserSerializer(user, data = request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
@@ -70,7 +88,7 @@ class ConfirmEmailView(APIView):
         confirmation.confirm(self.request)
         # A React Router Route will handle the failure scenario
         return redirect('http://127.0.0.1:5500/templates/main.html') # 인증성공
- 
+
     def get_object(self, queryset=None):
         key = self.kwargs['key']
         email_confirmation = EmailConfirmationHMAC.from_key(key)
@@ -104,7 +122,7 @@ class InquiryView(APIView):
         inquiry = Inquiry.objects.all().order_by('-id')
         serializer = InquirySerializer(inquiry, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     def post(self, request):
         serializer = InquirySerializer(data=request.data)
         if serializer.is_valid():
@@ -132,6 +150,6 @@ class UserChoiceBook(APIView):
             if serializer.is_valid():
                 serializer.save(user=request.user)
         return Response(serializer.data)
-        
 
-    
+
+
