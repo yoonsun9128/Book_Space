@@ -73,6 +73,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     profile_img = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
+    comment_set = CommentSerializer(many=True)
 
     class Meta:
         model = Article
