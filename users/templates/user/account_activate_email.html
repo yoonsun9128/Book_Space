@@ -12,7 +12,6 @@
     </style>
 </head>
 <body>
-{{ user.username}}님, 아래링크를 클릭해서 계정을 활성화해주세요
-http://{{ domain }}{% url 'user:activate' uidb64=uid token=token %}
+<a href="http://{{ domain }}{% url 'user:activate' uidb64=uid token=token %}">계정인증하기</a>
 </body>
 </html>

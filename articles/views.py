@@ -23,14 +23,15 @@ from django.db.models import Count
 
 django.setup()
 
-A = Book.objects.aggregate(Count('id'))
-B = str(A).split(':')[1].split('}')[0].split(' ')[1]
-print(B)
+# A = Book.objects.aggregate(Count('id'))
+# B = str(A).split(':')[1].split('}')[0].split(' ')[1]
+# print(B)
 
-if int(B) < 500:
-   crowling.function()
-else:
-    pass    
+# if int(B) < 320:
+#    crowling.function()
+# else:
+#     pass    
+
 
 
 class ArticleView(APIView): #메인페이지 전체리스트

@@ -23,10 +23,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
-    "allauth",
-    "allauth.account",
-    'allauth.socialaccount',
     "rest_framework.authtoken",
+    "six",
 ]
 
 REST_FRAMEWORK = {
