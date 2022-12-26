@@ -202,7 +202,8 @@ class CommentEditView(APIView):
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
     def delete(self, request, comment_id, article_id):
         comment = get_object_or_404(Comment, id=comment_id)
-        if request.user == comment.user:
+        article = get_object_or_404(Article, id=article_id)
+        if request.user == comment.user or request.user == article.user:
             comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
