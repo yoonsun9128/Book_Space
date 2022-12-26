@@ -21,6 +21,8 @@ import json , csv, os, requests
 import django
 from django.db.models import Count
 
+from django.db.models import Count
+
 django.setup()
 
 # A = Book.objects.aggregate(Count('id'))
@@ -31,7 +33,6 @@ django.setup()
 #    crowling.function()
 # else:
 #     pass    
-
 
 
 class ArticleView(APIView): #메인페이지 전체리스트

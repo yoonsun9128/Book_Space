@@ -16,12 +16,15 @@ class InquirySerializer(serializers.ModelSerializer):
     def get_updated_at(self, obj):
         return obj.updated_at.strftime('%Y-%m-%d')
 
+
     def get_user(self, obj):
         return obj.user.email
+
 
     class Meta:
         model = Inquiry
         fields = "__all__"
+
 
 class UserSerializer(serializers.ModelSerializer):
     passwordcheck = serializers.CharField(style={'input_type':'password'}, required=False)
@@ -124,6 +127,7 @@ class RecommendSerializer(serializers.ModelSerializer):
         model = User
         fields = ("select_books",)
 
+
 class MainNumberousBookSerializer(serializers.ModelSerializer):
     article_count = serializers.IntegerField(source='article_set.count', read_only=True)
     class Meta:
@@ -131,7 +135,9 @@ class MainNumberousBookSerializer(serializers.ModelSerializer):
         fields =  ("id","username", "article_count")
 
 
+
 class UserChoiceBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Taste
         fields = ("choice",)
+
