@@ -19,10 +19,18 @@ import random
 import json , csv, os, requests
 
 import django
+from django.db.models import Count
+
 django.setup()
 
-# crowling.function()
+A = Book.objects.aggregate(Count('id'))
+B = str(A).split(':')[1].split('}')[0].split(' ')[1]
+print(B)
 
+if int(B) < 500:
+   crowling.function()
+else:
+    pass    
 
 
 class ArticleView(APIView): #메인페이지 전체리스트
@@ -113,7 +121,7 @@ class ArticleDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
-    def post(self, request, article_id):
+    def post(self, request, article_id):        
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, article_id=article_id)
