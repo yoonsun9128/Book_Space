@@ -98,6 +98,8 @@ class ArticleListView(APIView): # 피드페이지
             articles_list = Article.objects.filter(is_private=False).order_by("-created_at")
         elif rank == "좋아요순":
             articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating')
+        elif rank == "댓글순":
+            articles_list = Article.objects.filter(is_private = False).annotate(num_comments=Count('comment')).order_by('-num_comments', '-rating')
         else:
             articles_list = Article.objects.filter(is_private=False).order_by("-rating")
         serializer = ArticleSerializer(articles_list, many=True)
