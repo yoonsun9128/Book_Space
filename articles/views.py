@@ -19,10 +19,18 @@ import random
 import json , csv, os, requests
 
 import django
+from django.db.models import Count
+
 django.setup()
 
-# crowling.function()
+A = Book.objects.aggregate(Count('id'))
+B = str(A).split(':')[1].split('}')[0].split(' ')[1]
+print(B)
 
+if int(B) < 500:
+   crowling.function()
+else:
+    pass    
 
 
 class ArticleView(APIView): #메인페이지 전체리스트
@@ -90,6 +98,8 @@ class ArticleListView(APIView): # 피드페이지
             articles_list = Article.objects.filter(is_private=False).order_by("-created_at")
         elif rank == "좋아요순":
             articles_list = Article.objects.filter(is_private=False).annotate(num_likes=Count('likes')).order_by('-num_likes', '-rating')
+        elif rank == "댓글순":
+            articles_list = Article.objects.filter(is_private = False).annotate(num_comments=Count('comment')).order_by('-num_comments', '-rating')
         else:
             articles_list = Article.objects.filter(is_private=False).order_by("-rating")
         serializer = ArticleSerializer(articles_list, many=True)
@@ -113,7 +123,7 @@ class ArticleDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
-    def post(self, request, article_id):
+    def post(self, request, article_id):        
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, article_id=article_id)
@@ -194,7 +204,8 @@ class CommentEditView(APIView):
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
     def delete(self, request, comment_id, article_id):
         comment = get_object_or_404(Comment, id=comment_id)
-        if request.user == comment.user:
+        article = get_object_or_404(Article, id=article_id)
+        if request.user == comment.user or request.user == article.user:
             comment.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:

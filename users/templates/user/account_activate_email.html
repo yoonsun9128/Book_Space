@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="email.css">
+    <style type="text/css">
+        
+    </style>
+</head>
+<body>
+{{ user.username}}님, 아래링크를 클릭해서 계정을 활성화해주세요
+http://{{ domain }}{% url 'user:activate' uidb64=uid token=token %}
+</body>
+</html>
