@@ -2,6 +2,11 @@ from rest_framework import serializers
 from users.models import User, Inquiry, Taste
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from articles.serializers import ArticleImageSerializer, BookRecommendSerializer
+from users.token import account_activation_token
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import EmailMessage
 
 class InquirySerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -11,12 +16,15 @@ class InquirySerializer(serializers.ModelSerializer):
     def get_updated_at(self, obj):
         return obj.updated_at.strftime('%Y-%m-%d')
 
+
     def get_user(self, obj):
         return obj.user.email
+
 
     class Meta:
         model = Inquiry
         fields = "__all__"
+
 
 class UserSerializer(serializers.ModelSerializer):
     passwordcheck = serializers.CharField(style={'input_type':'password'}, required=False)
@@ -25,10 +33,30 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email','username' ,'password','passwordcheck')
         extra_kwargs={
-            'password':{'write_only':True, 'required': False}
+            'password':{'write_only':True, 'required': False},
+            
         }
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        password = user.password
+        user.set_password(password)
+        user.is_active = False
+        user.save()
+        message = render_to_string('user/account_activate_email.html', {
+          'user': user,
+          'domain': 'localhost:8000',
+          'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+          'token': account_activation_token.make_token(user),
+        })
 
+        mail_subject = 'test'
+        to_email = user.email
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.send()
 
+        return validated_data
+    
+        
     def update(self, obj, validated_data):
         obj.username = validated_data.get('username', obj.username)
         obj.password = validated_data.get('password', obj.password)
@@ -38,7 +66,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         password=data.get('password')
-        passwordcheck=data.get('passwordcheck')
+        passwordcheck=data.pop('passwordcheck')
         if password != passwordcheck:
             raise serializers.ValidationError(
                 detail={"error":"비밀번호가 맞지 않습니다"}
@@ -72,6 +100,15 @@ class UserPasswordSerializer(serializers.ModelSerializer):
         return obj
 
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['email'] = user.email
+        token['userpk'] = user.pk
+        return token
+
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
     article_set = ArticleImageSerializer(many=True)
     class Meta:
@@ -90,6 +127,7 @@ class RecommendSerializer(serializers.ModelSerializer):
         model = User
         fields = ("select_books",)
 
+
 class MainNumberousBookSerializer(serializers.ModelSerializer):
     article_count = serializers.IntegerField(source='article_set.count', read_only=True)
     class Meta:
@@ -97,7 +135,9 @@ class MainNumberousBookSerializer(serializers.ModelSerializer):
         fields =  ("id","username", "article_count")
 
 
+
 class UserChoiceBookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Taste
         fields = ("choice",)
+
