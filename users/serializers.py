@@ -48,10 +48,10 @@ class UserSerializer(serializers.ModelSerializer):
           'uid': urlsafe_base64_encode(force_bytes(user.pk)),
           'token': account_activation_token.make_token(user),
         })
-
-        mail_subject = 'test'
+        mail_subject = 'Thumbook 회원가입 인증 이메일입니다.'
         to_email = user.email
         email = EmailMessage(mail_subject, message, to=[to_email])
+        email.content_subtype = "html"
         email.send()
 
         return validated_data
