@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import EmailMessage
+from django.contrib.auth.hashers import check_password
 
 class InquirySerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -34,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email','username' ,'password','passwordcheck')
         extra_kwargs={
             'password':{'write_only':True, 'required': False},
-            
+
         }
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -55,8 +56,8 @@ class UserSerializer(serializers.ModelSerializer):
         email.send()
 
         return validated_data
-    
-        
+
+
     def update(self, obj, validated_data):
         obj.username = validated_data.get('username', obj.username)
         obj.password = validated_data.get('password', obj.password)
@@ -67,6 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, data):
         password=data.get('password')
         passwordcheck=data.pop('passwordcheck')
+
         if password != passwordcheck:
             raise serializers.ValidationError(
                 detail={"error":"비밀번호가 맞지 않습니다"}
@@ -77,10 +79,14 @@ class UserSerializer(serializers.ModelSerializer):
                 detail={"error": "password의 길이는 8자리 이상이어야합니다."}
             )
 
-        return data
-    def validate_email(self, data):
+        if not any(char.isdigit() for char in password):
+            raise serializers.ValidationError(
+                detail=("password는 영문 숫자 조합으로 구성되어야 합니다.")
+            )
+
         if User.objects.filter(email=data).exists():
             raise serializers.ValidationError("이메일이 이미 존재합니다.")
+
         return data
 
 class UserNameSerializer(serializers.ModelSerializer):
@@ -101,6 +107,7 @@ class UserPasswordSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -108,6 +115,34 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['userpk'] = user.pk
         return token
+
+
+    def validate(self,data):
+        if not User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("이메일이 존재하지 않습니다.")
+
+        if User.objects.get(email=data['email']).is_active == False:
+            raise serializers.ValidationError("이메일 인증이 필요합니다.")
+
+        if (check_password(data['password'],User.objects.get(email=data['email']).password)) == False:
+            raise serializers.ValidationError("비밀번호가 틀렸습니다.")
+
+        result =super().validate(data)
+
+        refresh = self.get_token(self.user)
+
+         # response에 추가하고 싶은 key값들 추가
+        result['username'] = self.user.username
+        result['refresh'] = str(refresh)
+        result['access'] = str(refresh.access_token)
+        result['email'] = self.user.email
+        result['userpk'] = self.user.pk
+        result['is_active'] = self.user.is_active
+        result['password'] = self.user.password
+        result['success'] = True
+
+        return result
+
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈
     article_set = ArticleImageSerializer(many=True)
