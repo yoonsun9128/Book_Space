@@ -25,14 +25,14 @@ from django.db.models import Count
 
 django.setup()
 
-# A = Book.objects.aggregate(Count('id'))
-# B = str(A).split(':')[1].split('}')[0].split(' ')[1]
-# print(B)
+A = Book.objects.aggregate(Count('id'))
+B = str(A).split(':')[1].split('}')[0].split(' ')[1]
+print(B)
 
-# if int(B) < 320:
-#    crowling.function()
-# else:
-#     pass    
+if int(B) < 320:
+   crowling.function()
+else:
+    pass
 
 
 class ArticleView(APIView): #메인페이지 전체리스트
@@ -57,7 +57,7 @@ class ManyBookView(APIView): #많이 선택 된 책
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
     def get(self, request):
-        
+
         user_key = request.GET['user_key']
         book_id_list = []
         taste_id = Taste.objects.filter(user_id=int(user_key))
@@ -125,7 +125,7 @@ class ArticleDetailView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("작성자가 아닙니다!", status=status.HTTP_403_FORBIDDEN)
-    def post(self, request, article_id):        
+    def post(self, request, article_id):
         serializer = CommentCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, article_id=article_id)
@@ -167,7 +167,7 @@ class CreateArticleView(APIView):
         title = book.book_title
         book_id = book.id
         serializer = ArticleAddSerializer(data = request.data)
-        if serializer.is_valid(): 
+        if serializer.is_valid():
             serializer.save(user=request.user, select_book_id=book_id, title=title)
             return Response(serializer.data)
         else:
