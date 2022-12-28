@@ -141,6 +141,8 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
   * 텍스트형태의 데이터에서 원하는 html 태그를 쉽게추출할 수 있게금 해주는 기능이라서 크롤링할때 사용하기에 적합하였다.
 
 ## 아키텍쳐
+![image](https://user-images.githubusercontent.com/96002337/209822083-cd3763cf-5c7a-43ae-87f8-8cfe85e09500.png)
+
 
 ## 피드백
 
