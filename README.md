@@ -98,28 +98,28 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
      <details>
           <summary></summary>
 
-        - HTML
-        - Javascript
-        - CSS
+      - HTML
+      - Javascript
+      - CSS
      </details> 
 * ### DB
      <details>
             <summary></summary>
             
-        - Sqlite3
-        - PostgreSQL 
-        - AWS S3 
+      - Sqlite3
+      - PostgreSQL 
+      - AWS S3 
      </details> 
 * ### 배포
      <details>
            <summary></summary>
               
-        - docker 
-        - AWS EC2
-        - AWS Route53
-        - gunicorn
-        - Nginx
-        - cloudFront
+      - docker 
+      - AWS EC2
+      - AWS Route53
+      - gunicorn
+      - Nginx
+      - cloudFront
     </details>
     
 ## 스택사용배경
