@@ -98,28 +98,28 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
      <details>
           <summary></summary>
 
-    * HTML
-    * Javascript
-    * CSS
+        - HTML
+        - Javascript
+        - CSS
      </details> 
 * ### DB
      <details>
             <summary></summary>
             
-     * Sqlite3
-     * PostgreSQL 
-     * AWS S3 
+        - Sqlite3
+        - PostgreSQL 
+         - AWS S3 
      </details> 
 * ### 배포
      <details>
            <summary></summary>
               
-     * docker 
-     * AWS EC2
-     * AWS Route53
-     * gunicorn
-     * Nginx
-     * cloudFront
+        - docker 
+        - AWS EC2
+         - AWS Route53
+        - gunicorn
+        - Nginx
+        - cloudFront
     </details>
     
 ## 스택사용배경
@@ -147,29 +147,30 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
 ## 피드백
 
 * ### 회원가입/로그인 페이지
-
     * 회원가입시 이름이 겹쳐 회원가입이 email중복이라고 뜨는 문제<br>
         ---> 백엔드에서 보내오는 response를 구분하여 프론트엔드 알럿을 따로 적어주었습니다
         
     * email인증하라는 메일은 보내지지만 인증이 되지 않는 문제<br>
         ---> 이메일 인증을 방식을 바꾸고 APIView와 JWT토큰 custom을 통해 기능을 구현하였습니다
         
-    * 회원가입시 로딩이미지가 있으면 좋겠다는 의견<br>  
-       ---> 로딩바 추가해서 해당 문제 해결
+    * 회원가입시 로딩이미지가 있으면 좋겠다는 의견<br>
+        ---> 로딩바 추가해서 해당 문제 해결
        
-    * 회원가입 하지 않았는데 로그인하면, 계속 이메일을 확인해달라는 오류<br>  
-       ---> 로그인 시리얼라이즈를 커스텀해서 가입이 안된 아이디, 틀린패스워드 등의 validate 조건들을 추가했습니다
+    * 회원가입 하지 않았는데 로그인하면, 계속 이메일을 확인해달라는 오류  
+        ---> 로그인 시리얼라이즈를 커스텀해서 가입이 안된 아이디, 틀린패스워드 등의 validate 조건들을 추가했습니다
        
 * ### 피드 페이지 
 
-    * 게시글 상세페이지로 이동하는 상세보기 작아서 불편한 문제<br>  
+    * 게시글 상세페이지로 이동하는 상세보기 작아서 불편한 문제  
        ---> 크기를 변경하기보다는 더보기라는 텍스트로 좀더눈에 잘보이게해 사용자가 쉽게상세버튼을 클릭할 수 있게 하였습니다.
        
-    * 시간 구분이 없던 문제 <br>  
-       --->  timezone을 서울로 입력하였기 때문에 DB에도 같은 시간대로 입력이 되어야 하지만, 실제로는 UTC 기준으로 입력이 되는 문제가 원인이였다. USE_TZ = False로 하면 해결완료하였습니다. 
+    * 시간 구분이 없던 문제<br>
+       --->  timezone을 서울로 입력하였기 때문에 DB에도 같은 시간대로 입력이 되어야 하지만, 실제로는 UTC 기준으로 입력이 되는 문제가 원인이였다. USE_TZ = False로 하면 해
+       결완료하였습니다. 
        
-    * 디테일 페이지로 이동후 뒤로가기 시 셀렉트 박스 값 유지 문제 <br>  
-       ---> 뒤로가기할때 javascripts가 작동을 하지 않고 저장된값그대로 유지가 되는것이 문제의 원인이였습니다. window.onpageshow를 사용하여 새롭게 진입하든, 뒤로가기로 재진입하든 항상발생하는 이벤트로 설정을 해주어 해결하였습니다.(https://programmingsummaries.tistory.com/380)
+    * 디테일 페이지로 이동후 뒤로가기 시 셀렉트 박스 값 유지 문제<br> 
+       ---> 뒤로가기할때 javascripts가 작동을 하지 않고 저장된값그대로 유지가 되는것이 문제의 원인이였습니다. window.onpageshow를 사용하여 새롭게 진입하든, 뒤로가기로 재
+       진입하든 항상발생하는 이벤트로 설정을 해주어 해결하였습니다.(https://programmingsummaries.tistory.com/380)
 
 * ### 디테일 페이지
     * 다른 사람의 프로필을 클릭시 페이지 이동은 하는데 프로필이 나타나지 않는 문제<br>
@@ -181,7 +182,7 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
     * 내 게시글에서 다른 사용자가 작성한 댓글이 삭제가 안되는 문제<br>
        ---> 게시글 작성자가 게시글에 달린 다른 사용자의 댓글을 삭제할 수 있도록 백엔드 views.py의 댓글 삭제 부분에 조건을 추가해주었습니다
        
-    * 게시글 작성시 글 내용에 enter가 제대로 적용되지 않는 문제
+    * 게시글 작성시 글 내용에 enter가 제대로 적용되지 않는 문제<br>
        ---> 게시글이 보이는 div에 white-space:pre-line(enter를 적용시켜 보여주는 css) 이라는 style을 추가시켜줬습니다
     
     
@@ -201,12 +202,13 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
     * 추천이 제대로 동작하는 모르겠는 문제 예로 출산책을 선택했는데 다른 장르의 책이 추천된다.<br>
         ---> 프로젝트 추천시스템이 별점 기준으로 돌아가는데, 이를 사용자가 보는 화면에 언급해서 인지시켰습니다
         
-    * 추천 페이지에서 책 클릭시 yes24로 이동 가능하게 해달라는 의견<br>   
+    * 추천 페이지에서 책 클릭시 yes24로 이동 가능하게 해달라는 의견   
         ---> 이미지를 클릭하면 window.open으로 새창으로 yes24화면을 보여주었습니다
 
 * ### 유저 페이지
     * 유저네임과 패스워드 변경을 같이해야 되는 번거로운 문제<br>
-        ---> serialize를 구분해서 유저네임 따로 패스워드 따로로 구성했으며, views.py 에서 공란으로 들어오는 필드가 어디인지에 따라 해당 설정한 시리얼라이즈를 탈 수 있게 설정하였습니다
+        ---> serialize를 구분해서 유저네임 따로 패스워드 따로로 구성했으며, views.py 에서 공란으로 들어오는 필드가 어디인지에 따라 해당 설정한 시리얼라이즈를 탈 수 있게
+        설정하였습니다
     *  프로필 삭제 권한이 없어서 모든사람이 서로의 아이디 탈퇴
         ---> views.py 해당 함수에 if 절로 프로필 유저와 삭제할라는 유저가 같을 경우에만 삭제가 가능하게 조건문을 넣었습니다
         
@@ -218,7 +220,8 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
         ---> 마우스를 클릭해야지만 가능했던 문제를 제이쿼리를 이용하여 code = 'Enter'를 이용하여 지정해줘서 버튼클릭대신 enter로도 이용할수 있게 변경하였습니다
 
      * 좋아요 클릭시 페이지 유지가 안되는 문제<br> 
-        ---> 기존에는 javascript와 html에 좋아요기능을 나누어서 기능이 구현이 되어서 실시간으로 좋아요가 반응되지 않았던게 원인인데 javascript에다가 하나로합치게해서 즉각적으로 반응하게 하였습니다. 그리고 새로고침을해도 갱신된 내용을 받아오기때문에 기능구현에 문제는 없었습니다. 
+        ---> 기존에는 javascript와 html에 좋아요기능을 나누어서 기능이 구현이 되어서 실시간으로 좋아요가 반응되지 않았던게 원인인데 javascript에다가 하나로합치게해서 즉각
+        적으로 반응하게 하였습니다. 그리고 새로고침을해도 갱신된 내용을 받아오기때문에 기능구현에 문제는 없었습니다. 
 
      * 네비바를 이용자에 편의에 맞게 재배치<br>
         ---> 사이트 화면 flow에 따라 네비바 위치를 구성하였습니다
@@ -227,4 +230,5 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
         ---> 해당 도서를 누를때 도서 아이디를 기반으로 게시물을 역참조하여 관련있는 게시물이 보이게 로직을 작성했습니다.
         
 ## 시연영상 및 ppt
-<a href = "https://docs.google.com/presentation/d/1mbtcaXw9ApL6umlk9OUlbn4hse4wAu_iww0yZMqXb70/edit#slide=id.g1c2510aa81f_2_35">구글 슬라이드 바로가기</a>
+<a href = "https://docs.google.com/presentation/d/1mbtcaXw9ApL6umlk9OUlbn4hse4wAu_iww0yZMqXb70/edit#slide=id.g1c2510aa81f_2_35">구글 슬라이드 바로가기</a><br>
+<a href = "https://www.youtube.com/watch?v=DP8B0_Z7l-w">시연영상</a>
