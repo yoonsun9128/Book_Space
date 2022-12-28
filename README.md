@@ -108,7 +108,7 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
             
         - Sqlite3
         - PostgreSQL 
-         - AWS S3 
+        - AWS S3 
      </details> 
 * ### 배포
      <details>
@@ -116,7 +116,7 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
               
         - docker 
         - AWS EC2
-         - AWS Route53
+        - AWS Route53
         - gunicorn
         - Nginx
         - cloudFront
