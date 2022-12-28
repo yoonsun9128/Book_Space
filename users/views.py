@@ -20,14 +20,13 @@ import traceback
 
 class UserView(APIView):
     def post(self, request):
-        print(request.data)
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"message":"가입완료"}, status=status.HTTP_201_CREATED)
         else:
-            return Response({"message":f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -39,7 +38,7 @@ class UserActivate(APIView):
             user = User.objects.get(pk=uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
-        
+
         try:
             if user is not None and account_activation_token.check_token(user, token):
                 user.is_active = True
