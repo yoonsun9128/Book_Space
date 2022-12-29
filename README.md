@@ -124,7 +124,7 @@ S.A : https://www.notion.so/A1-c8728c9326d147d3b8dae30a8eba570c <br>
     
 ## 스택사용배경
 * **Django / DRF**
-    * Serializer, 유저 관리, REST API 등 Django에서 제공하는 기능들을 사용하기위해서 사용하였다.
+    * Serializer, 유저 관리, REST API 등 Django에서 제공하는 기능들을 사용하기 위해서 사용하였다.
 * **Django Rest Framework simple-jwt**
     * 유저 인증을 토큰방식으로 암호화하기 위해 사용하였다.
 * **AWS EC2**
