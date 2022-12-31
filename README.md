@@ -2,7 +2,7 @@
 ![image](https://user-images.githubusercontent.com/96002337/209745854-ca814f62-5c92-438d-be80-584cbeb69111.png)
 
 프로젝트 일정 : 22.12.02 ~ 22.12.28<br>
-Thumbook : https://www.thumbookfe.ml/<br>
+Thumbook : https://www.thumbookfe.ml/(site close)<br>
 
 Backend git: https://github.com/ksykma/Book_Space <br>
 Frontend git : https://github.com/ksykma/Book_Space_Front<br>
