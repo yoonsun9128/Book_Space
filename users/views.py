@@ -1,7 +1,8 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
-from rest_framework.response import Response, render
+from rest_framework.response import Response
+from django.shortcuts import render
 from articles.models import Article
 from .models import User, Inquiry, Taste
 from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer, UserNameSerializer,UserPasswordSerializer

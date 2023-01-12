@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import ( TokenObtainPairView, TokenRefreshVi
 from users import views
 from django.contrib.auth import views as auth_views
 
-app_name = 'users'
+app_name = 'user'
+
 urlpatterns = [
     path('signup/', views.UserView.as_view(), name='UserView'),
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
