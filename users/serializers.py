@@ -117,7 +117,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['userpk'] = user.pk
         return token
 
-
     def validate(self,data):
         if not User.objects.filter(email=data['email']).exists():
             raise serializers.ValidationError("이메일이 존재하지 않습니다.")
@@ -143,6 +142,28 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         result['success'] = True
 
         return result
+
+# class UserPasswordResetSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ("email",)
+
+#     def check(self, validated_data):
+#         print("----",validated_data)
+#         user = super().check(validated_data)
+#         print("----",user)
+#         message = render_to_string('user/password_reset.html', {
+#           'user': user,
+#           'domain': 'localhost:8000',
+#           'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#           'token': account_activation_token.make_token(user),
+#         })
+#         mail_subject = 'Thumbook 비밀번호 변경 이메일 입니다.'
+#         to_email = user.email
+#         email = EmailMessage(mail_subject, message, to=[to_email])
+#         email.content_subtype = "html"
+#         email.send()
+#         return validated_data
 
 
 class UserMypageSerializer(serializers.ModelSerializer): #마이페이지를 위한 시리얼라이즈

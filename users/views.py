@@ -1,21 +1,21 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
-from rest_framework.response import Response
+from rest_framework.response import Response, render
 from articles.models import Article
 from .models import User, Inquiry, Taste
 from users.serializers import UserSerializer, UserMypageSerializer, RecommendSerializer, UserImageSerializer, InquirySerializer, MainNumberousBookSerializer, UserChoiceBookSerializer, UserNameSerializer,UserPasswordSerializer
 from articles.serializers import ArticleImageSerializer
 from articles.models import Article
-from django.db.models import Q
-from django.db.models import Count
-from django.shortcuts import redirect
-
+from django.db.models import Q, Count
+from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.views import ( TokenObtainPairView,TokenRefreshView, )
 from users.serializers import CustomTokenObtainPairSerializer
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
 from users.token import account_activation_token
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
+from django.contrib.auth.forms import PasswordResetForm
 import traceback
 
 class UserView(APIView):
@@ -49,6 +49,33 @@ class UserActivate(APIView):
         except Exception as e:
             print(traceback.format_exc())
 
+# 패스워드 변경
+class PasswordResetView(PasswordResetView):
+    template_name = 'user/password_reset.html'
+    form_class = PasswordResetForm
+
+    def check_email(self, form):
+        if User.objects.filter(email=self.request.POST.get('email')) is not None :
+            return super().check_email(form)
+        else:
+            return render (self.request, 'user/password_reset_done_fail.html' )
+
+# class PasswordResetView(APIView):
+#     def post(self, request):
+#         print(request.data['email'])
+#         user = User.objects.filter(email=request.data['email'])
+#         if user is not None:
+#             print("통과")
+#             serializer = UserPasswordResetSerializer(data=request.data)
+#             print("통과dddd")
+#             if serializer.is_valid():
+#                 print("통과2")
+#                 serializer.save()
+#                 return Response({"message":"메일인증 완료"}, status=status.HTTP_202_ACCEPTED)
+#             else:
+#                 return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 class MypageView(APIView):
     def get(self, request, user_id):
@@ -59,30 +86,33 @@ class MypageView(APIView):
     def put(self, request, user_id):
         user = get_object_or_404(User, id=user_id)
         data = request.data
+        print(data)
         if request.user == user:
-            if data['password'] =="":
-                data = dict({key:value for key, value in data.items() if value !=""})
-                serializer = UserNameSerializer(user, data = request.data, partial=True)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
+            if check_password(data['now_password'],user.password) == True:
+                if data['password'] =="":
+                    data = dict({key:value for key, value in data.items() if value !=""})
+                    serializer = UserNameSerializer(user, data = request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data, status=status.HTTP_200_OK)
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                elif data['username'] =="":
+                    data = dict({key:value for key, value in data.items() if value !=""})
+                    serializer = UserPasswordSerializer(user, data = request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data, status=status.HTTP_200_OK)
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            elif data['username'] =="":
-                data = dict({key:value for key, value in data.items() if value !=""})
-                serializer = UserPasswordSerializer(user, data = request.data, partial=True)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                serializer = UserSerializer(user, data = request.data, partial=True)
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_200_OK)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    serializer = UserSerializer(user, data = request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data, status=status.HTTP_200_OK)
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else: return Response("현재 비밀번호가 틀렸습니다.", status=status.HTTP_403_FORBIDDEN)
         else:
             return Response("권한이 없습니다.!", status=status.HTTP_403_FORBIDDEN)
 
