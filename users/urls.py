@@ -1,8 +1,9 @@
 from django.urls import path
 from rest_framework_simplejwt.views import ( TokenObtainPairView, TokenRefreshView, )
 from users import views
+from django.contrib.auth import views as auth_views
 
-app_name = 'user'
+app_name = 'users'
 urlpatterns = [
     path('signup/', views.UserView.as_view(), name='UserView'),
     path('api/token/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -15,4 +16,9 @@ urlpatterns = [
     path('', views.RecommendView.as_view(), name='recommend_view'),
     path('inquiry/', views.InquiryView.as_view(), name='inquiry_view'),
     path('activate/<str:uidb64>/<str:token>/', views.UserActivate.as_view(), name='activate'),
+    # 비밀번호 변경 파트
+    path('password_reset/', views.PasswordResetView.as_view(), name="password_reset"),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+    path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
 ]
