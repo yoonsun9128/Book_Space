@@ -30,10 +30,10 @@ A = Book.objects.aggregate(Count('id'))
 B = str(A).split(':')[1].split('}')[0].split(' ')[1]
 print(B)
 
-if int(B) < 320:
-   crowling.function()
-else:
-    pass
+# if int(B) < 320:
+#    crowling.function()
+# else:
+#     pass
 
 class ArticleView(APIView): #메인페이지 전체리스트
     @swagger_auto_schema(
