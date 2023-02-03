@@ -10,7 +10,7 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="TO-DO API",  # 타이틀
+        title="Yoon API",  # 타이틀
         default_version='v1',   # 버전
         description="Swagger 정복기",   # 설명
         terms_of_service="https://azalea-keep-in-mind.tistory.com/1",

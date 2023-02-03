@@ -13,6 +13,7 @@ from articles import crowling
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.viewsets import ModelViewSet
 from articles.recom import recommendation
+from drf_yasg.utils import swagger_auto_schema
 
 # 파일 저장
 import random
@@ -34,9 +35,15 @@ if int(B) < 320:
 else:
     pass
 
-
 class ArticleView(APIView): #메인페이지 전체리스트
+    @swagger_auto_schema(
+        operation_description="메인페이지 전체 책리스트",
+        operation_summary="메인페이지 전체 책리스트",
+        responses={200:"성공", 401:"인증 오류", 403:"접근 권한 에러", 500:"서버 에러"},
+    )
     def get(self, request):
+        if not request.user.is_authenticated:
+            return Response({"message":"로그인 해주세요"}, status=status.HTTP_401_UNAUTHORIZED)
         best_list = Book.objects.all()
         serializer = BookSerializer(best_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -56,8 +63,13 @@ class ManyBookView(APIView): #많이 선택 된 책
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserArticleView(APIView): #추천머신러닝을 통한 결과물 메인페이지에 보여줄거
+    @swagger_auto_schema(
+        operation_description="추천도서 보여주는 파트",
+        operation_summary="추천도서",
+        # query_serializer={"?user_key":" "},
+        responses={200:"성공", 401:"인증 오류", 403:"접근 권한 에러", 500:"서버 에러"},
+    )
     def get(self, request):
-
         user_key = request.GET['user_key']
         book_id_list = []
         taste_id = Taste.objects.filter(user_id=int(user_key))
