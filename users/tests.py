@@ -17,6 +17,40 @@ class UserSignUpAPIViewTestCase(APITestCase):
         }
         response = self.client.post(url,user_data)
         self.assertEqual(response.status_code, 201)
+    # 이메일이 아닐 경우
+    def test_failed_signup_email(self):
+        url = reverse('user:UserView')
+        user_data = {
+            "email":"test",
+            "username":"test",
+            "password":"test123456",
+            "passwordcheck":"test123456"
+        }
+        response = self.client.post(url,user_data)
+        self.assertEqual(response.status_code, 400)
+    # 이메일 공란
+    def test_failed_signup_email_blank(self):
+        url = reverse('user:UserView')
+        user_data = {
+            "email":"",
+            "username":"test",
+            "password":"test123456",
+            "passwordcheck":"test123456"
+        }
+        response = self.client.post(url,user_data)
+        self.assertEqual(response.status_code, 400)
+    # 이름 중복
+    def test_failed_signup_name_overlap(self):
+        User.objects.create_user('test@test.com','test','test123456')
+        url = reverse('user:UserView')
+        user_data = {
+            "email":"admin@admin.com",
+            "username":"test",
+            "password":"test123456",
+            "passwordcheck":"test123456"
+        }
+        response = self.client.post(url,user_data)
+        self.assertEqual(response.status_code, 400)
 
 class UserLoginAPIViewTestCode(APITestCase):
     def setUp(self):
