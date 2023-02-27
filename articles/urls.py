@@ -2,6 +2,8 @@
 from django.urls import path
 from articles import views
 
+app_name = 'articles'
+
 urlpatterns = [
     path('', views.ArticleView.as_view(), name='article_view'),
     path('user/', views.UserArticleView.as_view(), name='user_article_view'),
